@@ -76,7 +76,7 @@ function bbox(cv) {
 }
 
 // Enquadra no tamanho final: retratos e vila com a base no rodapé, itens centralizados
-const FRAME = { portrait: [512, 512, 0.04, 'bottom'], pose: [1024, 1536, 0.03, 'bottom'], item: [512, 512, 0.06, 'center'], area: [1024, 1024, 0.03, 'bottom'] };
+const FRAME = { portrait: [512, 512, 0.04, 'bottom'], pose: [1024, 1536, 0.03, 'bottom'], item: [256, 256, 0.06, 'center'], area: [768, 768, 0.03, 'bottom'] };
 function frame(cv, kind) {
   const [W, H, pad, align] = FRAME[kind], b = bbox(cv), out = canvasOf(W, H);
   const s = Math.min((W * (1 - 2 * pad)) / b.w, (H * (1 - 2 * pad)) / b.h);
@@ -86,22 +86,77 @@ function frame(cv, kind) {
   return out;
 }
 
+// Acha os objetos separados de uma folha (pela transparência) e devolve as caixas em ordem de leitura.
+function findObjects(cv, junta = 0.018) {
+  const S = 4, W = cv.width, H = cv.height, w = Math.ceil(W / S), h = Math.ceil(H / S);
+  const d = cv.getContext('2d').getImageData(0, 0, W, H).data, m = new Uint8Array(w * h);
+  for (let y = 0; y < H; y += S) for (let x = 0; x < W; x += S) if (d[(y * W + x) * 4 + 3] > 40) m[(y / S) * w + x / S] = 1;
+  // junta pedaços próximos (sombra, brilho, partes soltas) numa peça só
+  const R = Math.max(1, Math.round(Math.min(w, h) * junta)), g = new Uint8Array(w * h);
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (m[y * w + x]) for (let dy = -R; dy <= R; dy++) for (let dx = -R; dx <= R; dx++) { const X = x + dx, Y = y + dy; if (X >= 0 && Y >= 0 && X < w && Y < h) g[Y * w + X] = 1; }
+  const lab = new Int32Array(w * h), boxes = [];
+  for (let p = 0; p < w * h; p++) {
+    if (!g[p] || lab[p]) continue;
+    const b = { x0: 1e9, y0: 1e9, x1: -1, y1: -1, n: 0 }, st = [p]; lab[p] = boxes.length + 1;
+    while (st.length) {
+      const q = st.pop(), x = q % w, y = (q - x) / w;
+      if (m[q]) { b.n++; if (x < b.x0) b.x0 = x; if (x > b.x1) b.x1 = x; if (y < b.y0) b.y0 = y; if (y > b.y1) b.y1 = y; }
+      for (const n of [x > 0 ? q - 1 : -1, x < w - 1 ? q + 1 : -1, q - w, q + w]) if (n >= 0 && n < w * h && g[n] && !lab[n]) { lab[n] = lab[p]; st.push(n); }
+    }
+    boxes.push(b);
+  }
+  const big = boxes.filter((b) => b.n > w * h * 0.002).map((b) => ({ x: b.x0 * S, y: b.y0 * S, w: (b.x1 - b.x0 + 1) * S, h: (b.y1 - b.y0 + 1) * S }));
+  // ordem de leitura: linhas de cima para baixo, cada linha da esquerda para a direita
+  big.sort((a, b) => a.y - b.y);
+  const rows = [];
+  for (const b of big) { const r = rows.find((r) => b.y + b.h / 2 > r.top && b.y + b.h / 2 < r.bot); if (r) { r.items.push(b); r.bot = Math.max(r.bot, b.y + b.h); } else rows.push({ top: b.y, bot: b.y + b.h, items: [b] }); }
+  return rows.flatMap((r) => r.items.sort((a, b) => a.x - b.x));
+}
+
+function crop(src, x, y, w, h) { const c = canvasOf(Math.round(w), Math.round(h)); c.getContext('2d').drawImage(src, x, y, w, h, 0, 0, c.width, c.height); return c; }
+
+// Lista de trabalhos: arquivos com nome do kit + folhas descritas em assets/originais/_folhas.json
+async function jobs() {
+  const list = [];
+  for (const file of await (await fetch('/api/originais')).json()) list.push({ file, ...plan(file) });
+  try {
+    const r = await fetch('/assets/originais/_folhas.json', { cache: 'no-cache' });
+    if (r.ok) for (const [file, j] of Object.entries(await r.json())) {
+      const outs = j.nomes.map((n) => { if (!n || n === '-') return null; const p = plan(n + '.png'); return p.error ? { error: `${n}: ${p.error}` } : p.outs[0]; });
+      const bad = outs.find((o) => o && o.error);
+      list.push(bad ? { file, error: bad.error } : { file, mode: j.modo, cols: j.cols, rows: j.rows, sheet: j.modo === 'grade', outs });
+    }
+  } catch (e) { console.warn('[folhas]', e); }
+  return list;
+}
+
 async function processAll() {
   $('#go').disabled = true; $('#save').disabled = true; $('#out').innerHTML = ''; results = [];
-  const files = await (await fetch('/api/originais')).json();
-  $('#log').textContent = files.length ? `${files.length} arquivo(s)…` : 'Nenhuma imagem em assets/originais/.';
-  for (const file of files) {
-    const p = plan(file), box = document.createElement('div');
-    box.className = 'src' + (p.error ? ' err' : ''); box.innerHTML = `<h2>${file}${p.error ? ' — ' + p.error : ''}</h2><div class="outs"></div>`;
+  const list = await jobs();
+  $('#log').textContent = list.length ? `${list.length} arquivo(s)…` : 'Nenhuma imagem em assets/originais/.';
+  for (const p of list) {
+    const box = document.createElement('div');
+    box.className = 'src' + (p.error ? ' err' : ''); box.innerHTML = `<h2>${p.file}${p.error ? ' — ' + p.error : ''}</h2><div class="outs"></div>`;
     $('#out').append(box);
     if (p.error) continue;
     try {
-      const img = await loadImg('/assets/originais/' + encodeURIComponent(file));
-      const cols = p.sheet ? p.cols : 1, rows = p.sheet ? p.rows : 1, cw = img.naturalWidth / cols, ch = img.naturalHeight / rows;
-      p.outs.slice(0, cols * rows).forEach((o, k) => {
-        const cell = canvasOf(Math.round(cw), Math.round(ch));
-        cell.getContext('2d').drawImage(img, (k % cols) * cw, Math.floor(k / cols) * ch, cw, ch, 0, 0, cell.width, cell.height);
-        removeBg(cell);
+      const img = await loadImg('/assets/originais/' + p.file.split('/').map(encodeURIComponent).join('/'));
+      const whole = canvasOf(img.naturalWidth, img.naturalHeight); whole.getContext('2d').drawImage(img, 0, 0);
+      let cells;
+      if (p.mode === 'itens') {
+        removeBg(whole);
+        let objs = [];
+        for (const j of [0.018, 0.012, 0.008, 0.005, 0.003]) { objs = findObjects(whole, j); if (objs.length >= p.outs.length) break; } // itens muito juntos: junta menos
+        if (objs.length !== p.outs.length) throw new Error(`achei ${objs.length} objetos, esperava ${p.outs.length}`);
+        const pad = 6;
+        cells = objs.map((b) => crop(whole, Math.max(0, b.x - pad), Math.max(0, b.y - pad), Math.min(whole.width - b.x + pad, b.w + 2 * pad), Math.min(whole.height - b.y + pad, b.h + 2 * pad)));
+      } else {
+        const cols = p.sheet ? p.cols : 1, rows = p.sheet ? p.rows : 1, cw = whole.width / cols, ch = whole.height / rows;
+        cells = p.outs.slice(0, cols * rows).map((_, k) => { const c = crop(whole, (k % cols) * cw, Math.floor(k / cols) * ch, cw, ch); removeBg(c); return c; });
+      }
+      cells.forEach((cell, k) => {
+        const o = p.outs[k];
+        if (!o) return; // "-" = pular este objeto
         const fin = frame(cell, o.kind);
         results.push({ f: o.f, cv: fin });
         const fig = document.createElement('figure'); fig.append(fin); fig.insertAdjacentHTML('beforeend', `<figcaption>${o.f}</figcaption>`);

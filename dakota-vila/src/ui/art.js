@@ -202,7 +202,7 @@ function park(cx, cy, k, p, info) {
 const DRAW = { building, plaza, houses, beach, pier, park };
 function drawArea(a, info, cx, cy, k = 1) {
   const img = areaArt(a.id, info.unlocked ? info.status : 'abandonado');
-  if (img) { const w = 230 * a.size * k; return `<image href="${img}" x="${cx - w / 2}" y="${cy - w * 0.78}" width="${w}" height="${w}" preserveAspectRatio="xMidYMax meet"/>`; }
+  if (img) { const w = 150 * a.size * k; return `<image href="${img}" x="${cx - w / 2}" y="${cy - w * 0.86}" width="${w}" height="${w}" preserveAspectRatio="xMidYMax meet"/>`; } // imagem quadrada com a base no rodapé
   return DRAW[a.type](cx, cy, a.size * k, palette(info), info, { tall: a.tall });
 }
 
@@ -259,7 +259,8 @@ export function areaZoom(a, info) {
   return `<svg class="zoom" viewBox="0 0 360 250">${VDEFS}<defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#a9e4ff"/><stop offset="1" stop-color="#fff0dc"/></linearGradient></defs><rect width="360" height="250" fill="url(#sky)"/>
   <circle cx="300" cy="46" r="24" fill="#fff6c9"/><path d="M0 150 Q60 120 120 140 T240 130 T360 140 V170 H0Z" fill="#5fd8f0"/><ellipse cx="180" cy="222" rx="230" ry="72" fill="${ground}"/>
   ${a.type !== 'pier' && a.type !== 'beach' ? tree(30, 200, 1, 'pink') + palm(336, 206, 1) : ''}
-  ${a.type === 'pier' ? `<g transform="translate(-10 0)">${drawArea(a, info, 110, 120, 1.7)}</g>` : drawArea(a, info, 180, a.type === 'building' ? 182 : 172, a.type === 'building' ? (a.tall ? 1.35 : 1.6) : 1.5)}</svg>`;
+  ${areaArt(a.id, info.unlocked ? info.status : 'abandonado') ? drawArea(a, info, 180, 212, 1.55 / a.size)
+    : a.type === 'pier' ? `<g transform="translate(-10 0)">${drawArea(a, info, 110, 120, 1.7)}</g>` : drawArea(a, info, 180, a.type === 'building' ? 182 : 172, a.type === 'building' ? (a.tall ? 1.35 : 1.6) : 1.5)}</svg>`;
 }
 
 /** Interior do restaurante: cada escolha (piso, parede, móveis, decoração) muda o cenário de verdade. */
