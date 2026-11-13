@@ -1,5 +1,12 @@
 {
   "items": {},
-  "portraits": {},
+  "portraits": {
+    "evie:bravo": "characters/evie-bravo.webp",
+    "evie:neutro": "characters/evie-neutro.webp",
+    "evie:rindo": "characters/evie-rindo.webp",
+    "evie:surpreso": "characters/evie-surpreso.webp",
+    "evie:triste": "characters/evie-triste.webp",
+    "evie": "characters/evie.webp"
+  },
   "areas": {}
 }

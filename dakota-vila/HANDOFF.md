@@ -94,6 +94,8 @@ Convenções:
 
 ## 6. Pipeline de arte em imagem
 
+**Recorte automático:** as imagens da IA vão para `assets/originais/` (folhas `<id>-expressoes.png` em grade 3×2, ou um arquivo por imagem). `npm run recortar` → http://localhost:8090/tools/recortar.html recorta, remove o fundo liso (inclusive o xadrez falso), enquadra (retrato 512, item 512, área 1024, `dakota-menu` 1024×1536), salva e roda o manifesto. Os PNG têm fundo transparente; os retratos em imagem ganham o degradê do personagem (`BG` em portraits.js). Primeiros retratos reais: Evie (6 expressões).
+
 **Kit para a IA de imagens: `assets/KIT-PROMPTS.md`** (prompt mestre + pacotes em ordem de prioridade, com o mockup anexado como referência). A lista completa continua em `assets/LISTA.md`.
 
 ```bash

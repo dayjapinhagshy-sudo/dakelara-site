@@ -168,7 +168,7 @@ export const PANELS = {
     const s = G.s;
     return { title: '👥 Personagens', body: `<div class="chars">${Object.entries(CHARACTERS).map(([id, c]) => {
       const rel = s.story.rel[id] || 0, hearts = Math.min(5, Math.floor(rel / 3));
-      const met = id === 'dakota' || s.story.seen.some((sc) => SCENES[sc].lines.some((l) => Array.isArray(l) && l[0] === id));
+      const met = id === 'dakota' || rel > 0 || s.story.seen.some((sc) => SCENES[sc].lines.some((l) => Array.isArray(l) && l[0] === id));
       return `<div class="char ${met ? '' : 'unmet'}">${portrait(met ? id : 'visitante', 'feliz', s.player)}<b>${id === 'dakota' ? esc(s.player.name) : met ? c.name : '???'}</b><small>${met ? c.role : 'Ainda não conhecido'}</small>
         ${met ? `<p>${c.bio}</p>` : ''}${id !== 'dakota' && met ? `<span class="hearts" title="Afinidade: ${rel}">${'❤️'.repeat(hearts)}${'🤍'.repeat(5 - hearts)}</span>${c.romance && hearts >= 2 ? '<small class="spark">💞 Há um clima no ar…</small>' : ''}` : ''}
         ${id === 'dakota' ? '<button class="btn sm" data-act="modal" data-name="perfil">Personalizar</button>' : ''}</div>`;

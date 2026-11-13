@@ -230,7 +230,10 @@ function mystery() {
 /** Retrato SVG de um personagem com a expressão pedida. */
 export function portrait(id, expr = 'neutro', player, pose) {
   const img = portraitArt(id, expr);
-  if (img && !(id === 'dakota' && player && player.custom)) return `<img class="portrait" src="${img}" alt="${CHARACTERS[id].name}" draggable="false">`;
+  if (img && !(id === 'dakota' && player && player.custom)) { // imagem com fundo transparente sobre o degradê do personagem
+    const [a, b] = BG[id] || BG.dakota;
+    return `<img class="portrait" src="${img}" alt="${CHARACTERS[id].name}" draggable="false" style="background:radial-gradient(circle at 50% 38%, ${a}, ${b})">`;
+  }
   const L = { ...CHARACTERS[id].look };
   if (id === 'dakota' && player) { L.hair = player.hair; L.skin = player.skin; }
   const inner = L.dog ? dog(expr) : L.mystery ? mystery() : human(id, expr, L, pose);

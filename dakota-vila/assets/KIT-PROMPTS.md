@@ -8,10 +8,21 @@ A lista completa com todos os 160+ arquivos está em `LISTA.md`. Este kit traz s
 1. **Anexe `docs/mockup.png`** na conversa com a IA. É a referência de estilo e de rosto dos personagens.
 2. Cole o **PROMPT MESTRE** abaixo uma vez, no começo da conversa.
 3. Depois peça **uma imagem por vez**, colando o prompt de cada arquivo. Ficar na mesma conversa ajuda a manter os rostos iguais.
-4. Salve cada imagem **com o nome exato** indicado, na pasta indicada (`assets/characters/`, `assets/items/` ou `assets/areas/`).
-5. Me avise: eu rodo `npm run assets`, confiro cada imagem dentro do jogo e ajusto o enquadramento.
+4. Salve tudo em **`assets/originais/`** com o nome do arquivo indicado (ex.: `evie-expressoes.png`, `gen-cafe.png`). **Não precisa recortar nem tirar o fundo**: fundo branco liso serve.
+5. Rode `npm run recortar`, abra http://localhost:8090/tools/recortar.html e toque em **Processar** e depois em **Salvar no jogo**. A ferramenta recorta as folhas, remove o fundo, enquadra no tamanho certo, salva em `assets/characters|items|areas/` e atualiza o `manifest.json`. (Ou só me avise que eu faço.)
 
-Se a IA não fizer fundo transparente, peça "fundo branco liso" e remova o fundo depois (Canva → "Remover fundo", ou remove.bg).
+### Folha de expressões (o jeito mais rápido para personagens)
+
+Peça as 6 expressões numa imagem só, numa grade de 3 colunas × 2 linhas, **nesta ordem**:
+
+```
+Arquivo <id>-expressoes.png: folha com 6 retratos de <personagem>, mesma roupa e enquadramento do peito para cima,
+grade de 3 colunas e 2 linhas, fundo branco liso, sem texto. Linha de cima: feliz sorrindo, rindo com os olhos fechados, calma.
+Linha de baixo: triste, surpresa com a boca em O, brava com as sobrancelhas franzidas.
+```
+
+Nomes: `dakota-expressoes.png`, `matilde-expressoes.png`, `juninho-expressoes.png`, `sol-expressoes.png`, `luna-expressoes.png`, `evie-expressoes.png`, `rafael-expressoes.png`, `vera-expressoes.png`, `teco-expressoes.png`, `visitante-expressoes.png`.
+Se a grade sair diferente (ex.: 2 colunas × 3 linhas), salve como `<id>-expressoes-2x3.png`.
 
 ---
 
