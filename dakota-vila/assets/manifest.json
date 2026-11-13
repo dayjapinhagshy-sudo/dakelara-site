@@ -287,5 +287,7 @@
     "salao:limpo": "areas/salao-limpo.webp",
     "salao:reformado": "areas/salao-reformado.webp"
   },
-  "scenery": {}
+  "scenery": {
+    "fundo": "areas/vila-fundo.webp"
+  }
 }

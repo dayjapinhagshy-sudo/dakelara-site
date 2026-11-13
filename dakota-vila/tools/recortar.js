@@ -83,9 +83,9 @@ function bbox(cv) {
 // Enquadra no tamanho final: retratos e vila com a base no rodapé, itens centralizados
 const FRAME = { portrait: [512, 512, 0.04, 'bottom'], pose: [1024, 1536, 0.03, 'bottom'], item: [256, 256, 0.06, 'center'], area: [768, 768, 0.03, 'bottom'], interior: [768, 512, 0.02, 'center'], enfeite: [384, 384, 0.03, 'bottom'] };
 function frame(cv, kind) {
-  if (kind === 'fundo') { // paisagem: preenche 1600×1000 inteiro (corta as sobras, sem deformar)
-    const out = canvasOf(1600, 1000), s = Math.max(1600 / cv.width, 1000 / cv.height), w = cv.width * s, h = cv.height * s;
-    const ctx = out.getContext('2d'); ctx.imageSmoothingQuality = 'high'; ctx.drawImage(cv, (1600 - w) / 2, (1000 - h) / 2, w, h);
+  if (kind === 'fundo') { // paisagem: a ilha inteira cabe em 1600×1000, centralizada, sem cortar; em volta fica o mar do jogo
+    const b = bbox(cv), out = canvasOf(1600, 1000), s = Math.min(1600 / b.w, 1000 / b.h), w = b.w * s, h = b.h * s;
+    const ctx = out.getContext('2d'); ctx.imageSmoothingQuality = 'high'; ctx.drawImage(cv, b.x, b.y, b.w, b.h, (1600 - w) / 2, (1000 - h) / 2, w, h);
     return out;
   }
   const [W, H, pad, align] = FRAME[kind], b = bbox(cv), out = canvasOf(W, H);
@@ -169,8 +169,7 @@ async function processAll() {
         const cols = p.sheet ? p.cols : 1, rows = p.sheet ? p.rows : 1, cw = whole.width / cols, ch = whole.height / rows;
         cells = p.outs.slice(0, cols * rows).map((_, k) => {
           const c = crop(whole, (k % cols) * cw, Math.floor(k / cols) * ch, cw, ch);
-          if (p.outs[k] && p.outs[k].kind === 'fundo') return c; // o fundo da vila é a imagem inteira, com o mar
-          removeBg(c);
+          removeBg(c); // no fundo da vila também: tira o branco ou o xadrez falso em volta da ilha
           if (!p.limpar) return c;
           // "limpar": fica só com o maior objeto da célula (tira lascas do vizinho que invadiram a grade)
           const big = findObjects(c, 0.004).sort((a, b) => b.w * b.h - a.w * a.h)[0];
