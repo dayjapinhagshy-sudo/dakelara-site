@@ -151,11 +151,12 @@ const STYLE = {
   juninho: { hair: 'curly', eye: '#5a3a22', fem: false, lip: '#b9576a', extra: (P) => ACC.freckles(), top: () => ACC.headphones() },
   sol: { hair: 'tousled', eye: '#4a2e1e', fem: false, lip: '#a9576a', extra: (P) => ACC.stubble(P) },
   luna: { hair: 'straight', eye: '#3a2a3a', fem: true, lip: '#d9577a', extra: () => ACC.hoops(2.4) },
+  evie: { hair: 'wavy', eye: '#3f7a4a', fem: true, lip: '#d9576a', extra: () => ACC.freckles() + ACC.hoops(2.2), top: () => ACC.flower(68, 26, '#fff', 3.2) },
   rafael: { hair: 'short', eye: '#4a3222', fem: false, lip: '#e6a0a8', mouthOver: true, extra: (P) => ACC.beard(P) },
   vera: { hair: 'wavy', eye: '#3a6a8a', fem: true, lip: '#d9334f', extra: () => ACC.hoops(2.8), top: () => ACC.shades(52, 18, -4) },
 };
 
-const BG = { dakota: ['#ffe0ee', '#ffb3d1'], matilde: ['#efe2ff', '#cdb3f2'], juninho: ['#e2f7d8', '#a9de95'], sol: ['#fff0cc', '#ffcf7a'], luna: ['#ffe3f1', '#ffb0d4'], rafael: ['#e3f0ff', '#a9cdf5'], vera: ['#ffe8d6', '#ffb99a'], teco: ['#fff4d9', '#ffd98f'], visitante: ['#ddd6f2', '#9d8fd1'] };
+const BG = { dakota: ['#ffe0ee', '#ffb3d1'], matilde: ['#efe2ff', '#cdb3f2'], juninho: ['#e2f7d8', '#a9de95'], sol: ['#fff0cc', '#ffcf7a'], luna: ['#ffe3f1', '#ffb0d4'], evie: ['#fff3d1', '#ffc98a'], rafael: ['#e3f0ff', '#a9cdf5'], vera: ['#ffe8d6', '#ffb99a'], teco: ['#fff4d9', '#ffd98f'], visitante: ['#ddd6f2', '#9d8fd1'] };
 
 function defs(P, L) {
   return `<defs>
@@ -169,7 +170,16 @@ function defs(P, L) {
   </defs>`;
 }
 
-function human(id, expr, L) {
+// Braço apoiado com a mão no queixo (pose da tela inicial, como no mockup)
+function chinHand(P, L) {
+  const sk = `url(#${P}skin)`, ln = shade(L.skin, -0.22);
+  return `<path d="M54 101 L59 81 Q65 75 72 78 L84 101Z" fill="url(#${P}knit)"/><path d="M58.5 83 Q65 78 72.5 81" fill="none" stroke="#e6dce6" stroke-width="1.6"/><path d="M60 92 q5 -2 10 0 M58 98 q6 -2 12 0" stroke="#e6dce6" stroke-width="1.2" fill="none"/>
+    <path d="M44 69.5 Q50 75.5 57.5 74.5 L60 80 Q66 79 70.5 77 Q70 71 67.5 67.5 L70.5 61 Q71.5 57.5 69 57 Q67 56.8 65.8 59.6 L64.6 62.4 L65.2 58.6 Q65.2 55.6 62.8 55.8 Q60.8 56.2 60.6 59 L59.6 66.4 Q54 71 44 69.5Z" fill="${sk}"/>
+    <path d="M65 63 L67.8 66.6 M60.6 66 Q62.6 68.6 64.8 68.4 M57.5 74.5 Q61 72.5 63.5 70" fill="none" stroke="${ln}" stroke-width=".9" stroke-linecap="round"/>
+    <ellipse cx="62.6" cy="57.6" rx="1.1" ry=".7" fill="#ff8fb8"/><ellipse cx="68.7" cy="58.4" rx="1" ry=".65" fill="#ff8fb8"/>`;
+}
+
+function human(id, expr, L, pose) {
   const st = STYLE[id];
   const P = Object.assign(new String('p' + ++uid + '-'), st, { skin: L.skin, hair: L.hair, cloth: L.cloth, bg: BG[id], brow: st.brow || shade(L.hair, -0.35) }); // id único dos gradientes
   const hs = HAIR[st.hair], sk = `url(#${P}skin)`;
@@ -181,6 +191,7 @@ function human(id, expr, L) {
     <path d="M50 22 C34 22 27 33 27 46 C27 61 37 71 50 71 C63 71 73 61 73 46 C73 33 66 22 50 22Z" fill="${sk}"/>
     ${face(P, expr)}
     ${st.extra ? st.extra(P) : ''}${st.mouthOver ? (MOUTH[expr] || MOUTH.feliz)(P) : ''}
+    ${pose === 'queixo' ? chinHand(P, L) : ''}
     ${hs.front(P)}
     ${st.top ? st.top(P) : ''}`;
 }
@@ -217,12 +228,12 @@ function mystery() {
 }
 
 /** Retrato SVG de um personagem com a expressão pedida. */
-export function portrait(id, expr = 'neutro', player) {
+export function portrait(id, expr = 'neutro', player, pose) {
   const img = portraitArt(id, expr);
   if (img && !(id === 'dakota' && player && player.custom)) return `<img class="portrait" src="${img}" alt="${CHARACTERS[id].name}" draggable="false">`;
   const L = { ...CHARACTERS[id].look };
   if (id === 'dakota' && player) { L.hair = player.hair; L.skin = player.skin; }
-  const inner = L.dog ? dog(expr) : L.mystery ? mystery() : human(id, expr, L);
+  const inner = L.dog ? dog(expr) : L.mystery ? mystery() : human(id, expr, L, pose);
   const vb = L.dog || L.mystery ? '0 0 100 100' : '7 4 86 86';
   return `<svg class="portrait" viewBox="${vb}" preserveAspectRatio="xMidYMid slice" role="img" aria-label="${CHARACTERS[id].name}"><clipPath id="c${uid}"><rect width="100" height="100"/></clipPath><g clip-path="url(#c${uid})">${inner}</g></svg>`;
 }

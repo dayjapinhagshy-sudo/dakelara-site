@@ -175,7 +175,7 @@ await page.click('.x');
 await page.click('.cell[data-i="18"]');
 await page.click('[data-act="store"]');
 assert.equal((await state()).inv.items.length, 1);
-await page.click('.bar [data-name="inventario"]');
+await page.click('.rail [data-name="inventario"]');
 await shot('33-inventario');
 await page.click('[data-act="retrieve"]');
 assert.equal((await state()).inv.items.length, 0);

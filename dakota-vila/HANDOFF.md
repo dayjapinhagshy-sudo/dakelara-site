@@ -44,7 +44,7 @@ JavaScript puro em ES modules, sem build, sem dependências. Motor separado da i
 src/data/      conteúdo e balanceamento (SEM lógica) — editar aqui para conteúdo novo
   items.js       25 cadeias / 146 itens, 14 geradores (+1 de evento), saque de baús, itemDef(id)
   config.js      economia, tabuleiro inicial 7×9, loja, conquistas, missões, festival, caça ao tesouro
-  world.js       9 personagens, 24 pedidos escritos, 10 áreas da vila, 3 estilos, álbum, 14 cenas
+  world.js       10 personagens (inclui Evie), 24 pedidos escritos, 10 áreas da vila, 3 estilos, álbum, 14 cenas
 src/engine/    regras puras
   core.js        estado (newGame), RNG injetável (setRng/seeded), barramento bus, energia, grant, XP/nível
   board.js       motor Merge-2 reutilizável para qualquer state.boards[k]: drop, activate, produce, tick, sell/undo, inventário
@@ -85,7 +85,7 @@ Convenções:
 ## 5. O que falta / próximos passos (em ordem sugerida)
 
 1. **Arte 3D real (prioridade da autora).** A arte atual é SVG com degradês (semi-3D) e itens com emojis do sistema. O caminho combinado: gerar imagens em estilo render 3D cartoon e soltar em `assets/`. Começar pelos 9 retratos, depois os 14 geradores e as primeiras cadeias (café, pães, ingredientes, doces). Ver seção 6.
-2. **Mais fiel ao mockup** onde ainda difere: menu com a Dakota em pose (apoiada na mão) e xícara de café; barra lateral do tabuleiro com atalhos (como no mockup); tela de reforma com comparação **Antes/Depois** lado a lado; cartões do menu de eventos com balão/ícones.
+2. ~~Mais fiel ao mockup~~ **feito em 13/11/2026**: menu com a Dakota apoiada na mão + cappuccino (ou `characters/dakota-menu.png`); barra lateral no tabuleiro (mochila, entrada, missões, próxima reforma, loja); reforma com **Antes → Depois** e "Escolha um estilo"; cartões ilustrados em Eventos (Festival com balão, Álbum com %, Oficina com geradores, Missões, Tesouro).
 3. Interiores reformáveis para outras áreas (cafeteria primeiro) — `interiorSvg` em art.js e `interior: true` + etapas em `AREAS` (world.js).
 4. História: completar o capítulo 3 (farol, Aurora) e cenas para mercado, pousada, parque, salão e casas; desfechos de romance (Sol/Rafael têm `romance: true`).
 5. Eventos sazonais e de decoração com conteúdo próprio (hoje o festival só troca nome/ícone).
@@ -93,6 +93,8 @@ Convenções:
 7. Balanceamento com jogadores reais (`src/data/config.js`).
 
 ## 6. Pipeline de arte em imagem
+
+**Kit para a IA de imagens: `assets/KIT-PROMPTS.md`** (prompt mestre + pacotes em ordem de prioridade, com o mockup anexado como referência). A lista completa continua em `assets/LISTA.md`.
 
 ```bash
 npm run assets:lista   # gera assets/LISTA.md: nome de arquivo + prompt de estilo 3D para cada imagem

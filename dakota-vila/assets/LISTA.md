@@ -42,6 +42,12 @@ Um arquivo `<id>.png` já basta; arquivos por expressão (`<id>-rindo.png`) são
 | `luna-triste.png` | mesmo personagem e enquadramento, expressão triste, sobrancelhas caídas |
 | `luna-surpreso.png` | mesmo personagem e enquadramento, expressão de surpresa, boca em O |
 | `luna-bravo.png` | mesmo personagem e enquadramento, expressão zangada, sobrancelhas franzidas |
+| `evie.png` | Retrato busto de Evie: mulher de 24 anos, cabelo ruivo acobreado longo e ondulado, sardas no nariz e bochechas, olhos verdes, regata amarela com camisa xadrez amarrada na cintura, câmera fotográfica pendurada no pescoço, pequena flor branca no cabelo, sorriso aventureiro, sorriso aberto, estilo render 3D cartoon de jogo mobile casual, cores vibrantes e acolhedoras, iluminação suave de estúdio, sombras e brilhos com volume, contornos arredondados, enquadramento do peito para cima |
+| `evie-rindo.png` | mesmo personagem e enquadramento, rindo com os olhos fechados |
+| `evie-neutro.png` | mesmo personagem e enquadramento, expressão calma |
+| `evie-triste.png` | mesmo personagem e enquadramento, expressão triste, sobrancelhas caídas |
+| `evie-surpreso.png` | mesmo personagem e enquadramento, expressão de surpresa, boca em O |
+| `evie-bravo.png` | mesmo personagem e enquadramento, expressão zangada, sobrancelhas franzidas |
 | `rafael.png` | Retrato busto de Rafael: homem de 30 anos, cabelo castanho com topete, barba cheia bem aparada, dólmã branca de chef com lenço vermelho, sorriso aberto, estilo render 3D cartoon de jogo mobile casual, cores vibrantes e acolhedoras, iluminação suave de estúdio, sombras e brilhos com volume, contornos arredondados, enquadramento do peito para cima |
 | `rafael-rindo.png` | mesmo personagem e enquadramento, rindo com os olhos fechados |
 | `rafael-neutro.png` | mesmo personagem e enquadramento, expressão calma |
@@ -330,4 +336,4 @@ Prompt de cada item: **"<descrição>, ícone de jogo merge, objeto único centr
 ### Ferramentas
 - `acelerador-1.png` — Acelerador (nível 1/1)
 
-Total: 146 itens, 15 geradores, 9 personagens, 40 imagens de vila.
+Total: 146 itens, 15 geradores, 10 personagens, 40 imagens de vila.

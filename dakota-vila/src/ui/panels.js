@@ -5,24 +5,44 @@ import { CHARACTERS, AREAS, STYLES, SCENES, CHAPTERS } from '../data/world.js';
 import { rewardText, dayEnd, weekEnd } from '../engine/core.js';
 import * as M from '../engine/meta.js';
 import { portrait, areaZoom, interiorSvg } from './art.js';
-import { esc, timer, ico, bar, priceText, fmt } from './util.js';
+import { esc, timer, ico, bar, priceText, fmt, itemFace } from './util.js';
 
 const tabs = (m, list) => `<nav class="tabs">${list.map(([k, label]) => `<button class="${(m.tab || list[0][0]) === k ? 'on' : ''}" data-act="tab" data-tab="${k}">${label}</button>`).join('')}</nav>`;
 const claimBtn = (can, done, act, attrs, label = 'Coletar') => done ? '<span class="done">✓ Coletado</span>' : `<button class="btn sm ${can ? 'go' : ''}" ${can ? '' : 'disabled'} data-act="${act}" ${attrs}>${label}</button>`;
-const CHOICE_NAMES = { piso: 'Piso', parede: 'Paredes', moveis: 'Móveis', decor: 'Decoração', estilo: 'Fachada' };
+// Ilustrações dos cartões de eventos
+const balloonSvg = () => `<svg viewBox="0 0 64 80" class="balloon"><defs><radialGradient id="blg" cx="35%" cy="30%" r="75%"><stop offset="0" stop-color="#ffd0e6"/><stop offset="1" stop-color="#ff5fa2"/></radialGradient></defs>
+  <path d="M32 4 C14 4 6 18 8 32 C10 44 22 52 26 58 L38 58 C42 52 54 44 56 32 C58 18 50 4 32 4Z" fill="url(#blg)"/>
+  <path d="M32 4 C24 12 22 40 28 58 M32 4 C40 12 42 40 36 58" fill="none" stroke="#ffe08a" stroke-width="5"/><path d="M14 24 Q32 30 50 24" fill="none" stroke="#fff" stroke-width="2" opacity=".6"/>
+  <path d="M27 58 L26 66 M37 58 L38 66" stroke="#8a5a33" stroke-width="1.4"/><rect x="24" y="65" width="16" height="11" rx="3" fill="#c98f5a"/><path d="M24 69 H40" stroke="#8a5a33" stroke-width="1.4"/><ellipse cx="25" cy="15" rx="5" ry="7" fill="#fff" opacity=".35"/></svg>`;
+const albumSvg = () => `<svg viewBox="0 0 80 64" class="albumart"><path d="M6 14 L40 8 L40 58 L6 62Z" fill="#ff8fc4"/><path d="M74 14 L40 8 L40 58 L74 62Z" fill="#9b5de5"/>
+  <path d="M9 15 L38 10 L38 55 L9 59Z" fill="#fff8ef"/><path d="M71 15 L42 10 L42 55 L71 59Z" fill="#fff8ef"/>
+  <rect x="13" y="17" width="20" height="16" rx="2" fill="#7fd6f2" transform="rotate(-6 23 25)"/><circle cx="18" cy="22" r="3" fill="#fff6c9"/><path d="M13 31 l7 -6 l6 4 l7 -6 v8Z" fill="#5cc35a" transform="rotate(-6 23 25)"/>
+  <rect x="46" y="15" width="20" height="16" rx="2" fill="#ffd0e2" transform="rotate(5 56 23)"/><path d="M56 27 c-3 -3 -6 0 -3 3 l3 3 l3 -3 c3 -3 0 -6 -3 -3Z" fill="#ff5fa2"/>
+  <rect x="15" y="38" width="18" height="12" rx="2" fill="#ffe08a" transform="rotate(4 24 44)"/><rect x="47" y="37" width="18" height="13" rx="2" fill="#b9f2d2" transform="rotate(-5 56 43)"/></svg>`;
+const CHOICE_NAMES ={ piso: 'Piso', parede: 'Paredes', moveis: 'Móveis', decor: 'Decoração', estilo: 'Fachada' };
 
-function preview(a, info, key, style) {
-  const fake = { ...info, step: info.step + 1, choices: { ...info.choices, [key]: style } };
-  const total = a.steps.length;
-  fake.status = fake.step >= total ? 'decorado' : fake.step === 1 ? 'limpo' : 'reformado';
-  return a.interior && key !== 'estilo' ? interiorSvg(fake) : areaZoom(a, fake);
+// Estado da área depois da próxima etapa (com o estilo escolhido, se a etapa tiver escolha).
+function afterStep(a, info, key, style) {
+  const fake = { ...info, step: info.step + 1, choices: key ? { ...info.choices, [key]: style } : info.choices };
+  fake.status = fake.step >= a.steps.length ? 'decorado' : fake.step === 1 ? 'limpo' : 'reformado';
+  return fake;
 }
+// Mostra o salão (interior) ou a fachada, conforme a etapa e a aba escolhida.
+const inside = (a, key, view) => a.interior && key !== 'estilo' && (key || view === 'dentro');
+const draw = (a, st, ins) => (ins ? interiorSvg(st) : areaZoom(a, st));
+function preview(a, info, key, style) { return draw(a, afterStep(a, info, key, style), inside(a, key, 'dentro')); }
 
 export const PANELS = {
   area(G, m) {
     const s = G.s, info = M.areaInfo(s, m.id), a = info.a, next = info.next;
     const view = m.view || (a.interior ? 'dentro' : 'fora');
-    let body = `<div class="zoomwrap">${a.interior && view === 'dentro' ? interiorSvg(info) : areaZoom(a, info)}</div>`;
+    const sel = m.style || 'tropical';
+    let body;
+    if (info.unlocked && next) { // comparação Antes → Depois da próxima etapa (como no mockup)
+      const ins = inside(a, next.choice, view);
+      body = `<div class="compare"><figure class="antes ${info.status}">${draw(a, info, ins)}<figcaption>Antes</figcaption></figure><i class="go-arrow" aria-hidden="true">➜</i>
+        <figure class="depois zoomwrap">${draw(a, afterStep(a, info, next.choice, sel), ins)}<figcaption>Depois</figcaption></figure></div>`;
+    } else body = `<div class="zoomwrap">${a.interior && view === 'dentro' ? interiorSvg(info) : areaZoom(a, info)}</div>`;
     if (a.interior) body += `<nav class="tabs small"><button class="${view === 'dentro' ? 'on' : ''}" data-act="view" data-view="dentro">Salão</button><button class="${view === 'fora' ? 'on' : ''}" data-act="view" data-view="fora">Fachada</button></nav>`;
     body += `<div class="row between"><span class="tag ${info.status}">${M.STATUS_NAMES[info.status]}</span>${bar(info.step, info.total, `Etapa ${info.step}/${info.total}`)}</div>`;
     if (!info.unlocked) body += `<p class="note">🔒 Este terreno será liberado no <b>nível ${a.lvl}</b>. Continue atendendo pedidos!</p>`;
@@ -30,8 +50,7 @@ export const PANELS = {
       const can = s.wallet.stars >= next.stars;
       body += `<div class="card"><h3>🔨 ${next.name}</h3>`;
       if (next.choice) {
-        const sel = m.style || 'tropical';
-        body += `<p class="note">Escolha um estilo — o cenário muda de verdade e a escolha fica salva.</p><div class="styles">${Object.entries(STYLES).map(([k, st]) => `<button class="style ${sel === k ? 'on' : ''}" data-act="pickstyle" data-style="${k}">${preview(a, info, next.choice, k)}<b>${st.name}</b></button>`).join('')}</div>`;
+        body += `<h4 class="pick-title">Escolha um estilo</h4><div class="styles">${Object.entries(STYLES).map(([k, st]) => `<button class="style ${sel === k ? 'on' : ''}" data-act="pickstyle" data-style="${k}">${preview(a, info, next.choice, k)}<b>${st.name}</b></button>`).join('')}</div>`;
         body += `<button class="btn big ${can ? 'go' : ''}" ${can ? '' : 'disabled'} data-act="step" data-id="${a.id}" data-style="${sel}">Reformar em estilo ${STYLES[sel].name} · ⭐ ${next.stars}</button>`;
       } else body += `<button class="btn big ${can ? 'go' : ''}" ${can ? '' : 'disabled'} data-act="step" data-id="${a.id}">${next.name} · ⭐ ${next.stars}</button>`;
       if (!can) body += `<p class="note">Faltam ⭐ ${next.stars - s.wallet.stars}. Entregue pedidos no tabuleiro para ganhar estrelas.</p>`;
@@ -104,12 +123,20 @@ export const PANELS = {
     if (tab === 'cal') {
       body += `<div class="card"><h3>🎁 Bônus de login</h3><div class="login">${LOGIN_REWARDS.map((r, i) => `<div class="day ${i < login.idx || (i === login.idx && login.claimedToday) ? 'got' : ''} ${i === login.idx && login.canClaim ? 'today' : ''}"><small>Dia ${i + 1}</small><span>${rewardText(r)}</span></div>`).join('')}</div>
         ${login.canClaim ? '<button class="btn big go" data-act="login">Coletar bônus de hoje</button>' : `<p class="note">Volte amanhã! Próximo bônus em ${timer(dayEnd(now), now)}.</p>`}</div>`;
-      body += `<div class="card"><h3>🗓️ Acontecendo agora</h3>
-        <button class="evrow" data-act="tab" data-tab="fest"><span class="big-em">${fest.def.icon}</span><div><b>${fest.def.name}</b><small>Termina em ${timer(fest.end, now)} · ${fest.pts} pontos</small></div></button>
-        <button class="evrow" data-act="tab" data-tab="missoes"><span class="big-em">📋</span><div><b>Missões do dia</b><small>Renovam em ${timer(dayEnd(now), now)}</small></div></button>
-        <button class="evrow" data-act="tab" data-tab="missoes"><span class="big-em">🗒️</span><div><b>Missões da semana</b><small>Renovam em ${timer(weekEnd(now), now)}</small></div></button>
-        <button class="evrow" data-act="tab" data-tab="tesouro"><span class="big-em">⛏️</span><div><b>Caça ao Tesouro</b><small>Mapa ${s.hunt.map} · ${s.hunt.shovels} pás · sempre aberto</small></div></button>
-        <button class="evrow" data-act="modal" data-name="colecoes" data-tab="album"><span class="big-em">🎴</span><div><b>Álbum da Vila</b><small>${M.albumState(s).reduce((n, a) => n + a.have, 0)} cartas coletadas</small></div></button></div>`;
+      // Cartões ilustrados (como no mockup): Festival, Coleções, Oficina, Missões e Tesouro
+      const album = M.albumState(s), have = album.reduce((n, a) => n + a.have, 0), total = album.reduce((n, a) => n + a.cards.length, 0);
+      const pct = total ? Math.round((have / total) * 100) : 0;
+      const gens = Object.keys(GENERATORS).filter((g) => !GENERATORS[g].event && M.upgradeInfo(s, g).lvl);
+      const canUp = gens.some((g) => { const u = M.upgradeInfo(s, g); return u.cost && s.wallet.comps >= u.cost.comps && s.wallet.coins >= u.cost.coins; });
+      const tasks = ['daily', 'weekly'].flatMap((sc) => M.tasks(s, sc, now)), ready = tasks.filter((x) => x.done && !x.claimed).length;
+      const evcard = (attrs, title, icon, inner, art, cls = '') => `<button class="evcard ${cls}" ${attrs}><b class="evchip"><i>${icon}</i>${title}</b><div class="evbody"><div class="evtxt">${inner}</div><div class="evart" aria-hidden="true">${art}</div></div></button>`;
+      body += `<div class="evcards">
+        ${evcard('data-act="tab" data-tab="fest"', 'Eventos', '🗓️', `<b>${fest.def.name}</b><span class="evtime">⏱ ${timer(fest.end, now)}</span><small>${fest.pts} pontos</small>`, `${balloonSvg()}<span class="gift">🎁</span>`, 'wide')}
+        ${evcard('data-act="modal" data-name="colecoes" data-tab="album"', 'Coleções', '📖', `<b>Álbum da Vila</b>${bar(pct, 100, `${pct}%`)}`, albumSvg())}
+        ${evcard('data-act="modal" data-name="oficina"', 'Oficina', '🔧', `<b>Melhore seus geradores!</b>${canUp ? '<small class="up">Há evolução disponível</small>' : ''}`, gens.slice(0, 3).map((g) => `<span class="genup">${itemFace('gen:' + g)}<i>⬆</i></span>`).join(''))}
+        ${evcard('data-act="tab" data-tab="missoes"', 'Missões', '📋', `<b>Do dia e da semana</b><small>Renovam em ${timer(dayEnd(now), now)}</small>${ready ? `<b class="dot">${ready}</b>` : ''}`, '<span class="big-em">📋</span>')}
+        ${evcard('data-act="tab" data-tab="tesouro"', 'Tesouro', '⛏️', `<b>Caça ao Tesouro</b><small>Mapa ${s.hunt.map} · ${s.hunt.shovels} pás</small>`, '<span class="big-em">🗺️</span>')}
+      </div>`;
     } else if (tab === 'missoes') {
       for (const [scope, label, end] of [['daily', 'Missões do dia', dayEnd(now)], ['weekly', 'Missões da semana', weekEnd(now)]]) {
         body += `<div class="card"><div class="row between"><h3>${label}</h3><small>⏳ ${timer(end, now)}</small></div>${M.tasks(s, scope, now).map((t) => `<div class="task ${t.claimed ? 'claimed' : ''}"><div><b>${t.text}</b>${bar(t.prog, t.n)}</div><div class="rw"><small>${rewardText(t.reward)}</small>${claimBtn(t.done, t.claimed, 'task', `data-scope="${scope}" data-id="${t.id}"`)}</div></div>`).join('')}</div>`;

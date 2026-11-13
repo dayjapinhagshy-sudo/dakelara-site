@@ -18,5 +18,7 @@ const url = (p) => (p ? 'assets/' + p : null);
 export const itemArt = (id) => url(M.items[id]);
 /** Retrato: tenta "dakota:rindo", depois "dakota". */
 export const portraitArt = (id, expr) => url(M.portraits[`${id}:${expr}`] || M.portraits[id]);
+/** Dakota em pose para a tela inicial (characters/dakota-menu.png). */
+export const menuArt = () => url(M.portraits['dakota:menu']);
 /** Área da vila por estado: "restaurante:decorado", depois "restaurante". */
 export const areaArt = (id, status) => url(M.areas[`${id}:${status}`] || M.areas[id]);

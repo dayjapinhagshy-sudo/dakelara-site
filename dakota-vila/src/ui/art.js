@@ -2,7 +2,7 @@
 import { CHARACTERS, STYLES, AREAS } from '../data/world.js';
 
 import { shade, portrait } from './portraits.js';
-import { areaArt } from './assets.js';
+import { areaArt, menuArt } from './assets.js';
 export { shade };
 
 export { portrait };
@@ -308,7 +308,23 @@ export function sceneBg(kind) {
   return `<svg viewBox="0 0 360 640" preserveAspectRatio="xMidYMid slice">${VDEFS}<defs><linearGradient id="dsky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffc1dc"/><stop offset=".5" stop-color="#ffe2b8"/><stop offset="1" stop-color="#9fe3f7"/></linearGradient></defs><rect width="360" height="640" fill="url(#dsky)"/><circle cx="270" cy="150" r="46" fill="#fff6c9"/><rect y="330" width="360" height="310" fill="#5cc3ea"/><path d="M0 360 q30 -10 60 0 t60 0 t60 0 t60 0 t60 0 t60 0" stroke="#fff" stroke-width="3" fill="none" opacity=".6"/><path d="M-20 420 Q120 340 380 410 V640 H-20Z" fill="#ffe9b8"/><path d="M-20 470 Q140 400 380 470 V640 H-20Z" fill="#a8e68f"/>${tree(300, 500, 1.6, 'pink')}${palm(40, 480, 2)}${tree(130, 520, 1.2, 'pink')}${palm(330, 470, 1.4)}<g transform="translate(250 330)"><path d="M-10 0 L-6 -50 h12 L10 0Z" fill="#fff"/><rect x="-8" y="-60" width="16" height="10" fill="#ffe08a"/><path d="M-10 -60 L0 -70 L10 -60Z" fill="#4a5b78"/></g></svg>`;
 }
 
-/** Arte da tela de título. */
+/** Xícara de cappuccino com coração na espuma (tela inicial). */
+export function coffeeCup() {
+  return `<svg viewBox="0 0 120 84" aria-hidden="true"><defs>
+    <linearGradient id="cupB" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff"/><stop offset=".7" stop-color="#f6eef6"/><stop offset="1" stop-color="#ddd0e2"/></linearGradient>
+    <radialGradient id="cupF" cx="45%" cy="40%" r="65%"><stop offset="0" stop-color="#f3dcc0"/><stop offset=".75" stop-color="#d9a777"/><stop offset="1" stop-color="#a8713f"/></radialGradient></defs>
+    <ellipse cx="58" cy="72" rx="54" ry="11" fill="#e9dcef"/><ellipse cx="58" cy="70" rx="50" ry="9" fill="#fff"/><ellipse cx="58" cy="69" rx="30" ry="5" fill="#e6d8ea"/>
+    <path d="M90 30 C110 28 110 54 88 54" fill="none" stroke="#f1e6f2" stroke-width="8" stroke-linecap="round"/><path d="M90 30 C106 30 106 52 88 52" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+    <path d="M24 22 C24 52 34 68 58 68 C82 68 92 52 92 22Z" fill="url(#cupB)"/><path d="M30 44 C34 58 44 64 58 64" fill="none" stroke="#ffb3d1" stroke-width="3" opacity=".7"/>
+    <ellipse cx="58" cy="22" rx="34" ry="9" fill="#efe4f1"/><ellipse cx="58" cy="22.5" rx="30" ry="7.2" fill="url(#cupF)"/>
+    <path d="M58 27 C50 21 50 16 54.5 16 C56.5 16 58 18 58 19.5 C58 18 59.5 16 61.5 16 C66 16 66 21 58 27Z" fill="#fff6ea"/>
+    <path class="steam" d="M46 10 q-4 -5 0 -9 M58 8 q-4 -5 0 -9 M70 10 q-4 -5 0 -9" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" opacity=".8"/></svg>`;
+}
+
+/** Arte da tela de título: Dakota apoiada na mão com um cappuccino (ou a imagem dakota-menu.png, se existir). */
 export function titleArt(player) {
-  return `<div class="title-bg">${sceneBg('vila')}</div><div class="title-hero">${portrait('dakota', 'feliz', player)}</div>`;
+  const img = !(player && player.custom) && menuArt();
+  const hero = img ? `<div class="title-pose img"><img src="${img}" alt="Dakota" draggable="false"></div>`
+    : `<div class="title-pose"><div class="title-hero">${portrait('dakota', 'feliz', player, 'queixo')}</div><div class="title-cup">${coffeeCup()}</div></div>`;
+  return `<div class="title-bg">${sceneBg('vila')}</div>${hero}`;
 }

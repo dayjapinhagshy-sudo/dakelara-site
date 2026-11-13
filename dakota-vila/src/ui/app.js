@@ -179,6 +179,22 @@ function infoPanel(t) {
   return `<section class="info">${ico(it.id)}<div class="info-txt"><b>${d.name}</b><small>${sub}</small>${chain}</div><div class="info-btns">${btns}</div></section>`;
 }
 
+// Barra lateral de atalhos do tabuleiro (como no mockup): mochila, entrada, missões, próxima reforma e loja.
+function sideRail(t) {
+  const s = G.s;
+  const tasks = ['daily', 'weekly'].reduce((n, sc) => n + M.tasks(s, sc, t).filter((x) => x.done && !x.claimed).length, 0);
+  const next = AREAS.map((a) => M.areaInfo(s, a.id)).find((x) => x.unlocked && x.next);
+  const canBuild = next && s.wallet.stars >= next.next.stars;
+  const dot = (n) => (n ? `<b class="dot">${n}</b>` : '');
+  return `<nav class="rail" aria-label="Atalhos">
+    <button data-act="modal" data-name="inventario" class="bag" title="Inventário"><span>🎒</span><small>${s.inv.items.length}/${s.inv.slots}</small></button>
+    <button data-act="inbox" class="${s.inbox.length ? 'pulse' : ''}" title="Caixa de entrada"><span>📬</span>${dot(s.inbox.length)}</button>
+    <button data-act="modal" data-name="eventos" data-tab="missoes" title="Missões"><span>📋</span>${dot(tasks)}</button>
+    ${next ? `<button data-act="area" data-id="${next.a.id}" class="${canBuild ? 'pulse' : ''}" title="Próxima reforma: ${next.next.name}"><span>⭐</span><small>${Math.min(s.wallet.stars, next.next.stars)}/${next.next.stars}</small></button>`
+      : '<button data-act="go" data-scene="village" title="Vila"><span>⭐</span></button>'}
+    <button data-act="modal" data-name="loja" title="Loja"><span>🛒</span></button></nav>`;
+}
+
 function boardScene() {
   const s = G.s, t = now(), ev = G.bk === 'event';
   if (ev) M.ensureEventBoard(s, t);
@@ -193,15 +209,13 @@ function boardScene() {
     const streak = O.streakBonus(s, t);
     top = `<section class="orders">${s.orders.active.map((o) => orderCard(o, have, t)).join('') || '<p class="note">Novos clientes a caminho…</p>'}</section>${streak > 0 ? `<div class="streak">🔥 Sequência ×${streak} · +${streak * 10}% moedas</div>` : ''}`;
   }
-  const navMain = `<button data-act="go" data-scene="village"><span>🏝️</span>Vila</button>
-    <button data-act="modal" data-name="inventario" class="bag"><span>🎒</span>${s.inv.items.length}/${s.inv.slots}</button>
-    <button data-act="inbox" class="${s.inbox.length ? 'pulse' : ''}"><span>📬</span>Entrada${s.inbox.length ? `<b class="dot">${s.inbox.length}</b>` : ''}</button>
+  const navMain = `<button data-act="go" data-scene="village" class="main"><span>🏝️</span>Vila</button>
     <button data-act="modal" data-name="oficina"><span>🔧</span>Oficina</button>
     <button data-act="modal" data-name="eventos"><span>🎪</span>Eventos${M.pendingClaims(s, t) ? `<b class="dot">${M.pendingClaims(s, t)}</b>` : ''}</button>
     <button data-act="undo" ${s.undo ? '' : 'disabled'}><span>↩️</span>Desfazer</button>`;
   const navEv = `<button data-act="go" data-scene="board" data-bk="main"><span>⬅️</span>Tabuleiro</button><button data-act="modal" data-name="eventos" data-tab="fest"><span>🎁</span>Prêmios</button><button data-act="undo" ${s.undo ? '' : 'disabled'}><span>↩️</span>Desfazer</button>`;
   return `<div class="scene board ${ev ? 'event' : ''}">${hud()}${top}
-    <div class="grid-wrap"><div class="grid" style="--w:${b.w};--h:${b.h}">${b.cells.map((it, i) => cellHtml(it, i, wanted, t)).join('')}</div></div>
+    <div class="board-mid">${ev ? '' : sideRail(t)}<div class="grid-wrap"><div class="grid" style="--w:${b.w};--h:${b.h}">${b.cells.map((it, i) => cellHtml(it, i, wanted, t)).join('')}</div></div></div>
     ${infoPanel(t)}<nav class="bar">${ev ? navEv : navMain}</nav></div>`;
 }
 
@@ -447,7 +461,7 @@ document.addEventListener('pointermove', (e) => {
   const c = over && over.closest('.grid .cell');
   $$('.cell.over').forEach((x) => x.classList.remove('over'));
   if (c) c.classList.add('over');
-  const bag = $('.bar .bag'); if (bag) bag.classList.toggle('over', !!(over && over.closest('.bag')));
+  const bag = $('.bag'); if (bag) bag.classList.toggle('over', !!(over && over.closest('.bag')));
 });
 function endDrag(e, cancel) {
   const d = G.drag;

@@ -7,7 +7,7 @@ import { allItemIds, GENERATORS } from '../src/data/items.js';
 import { CHARACTERS, AREAS } from '../src/data/world.js';
 
 const root = fileURLToPath(new URL('../assets/', import.meta.url));
-const EXPR = ['feliz', 'rindo', 'neutro', 'triste', 'surpreso', 'bravo'];
+const EXPR = ['feliz', 'rindo', 'neutro', 'triste', 'surpreso', 'bravo', 'menu']; // "menu" = pose da tela inicial (só dakota)
 const STATES = ['abandonado', 'limpo', 'reformado', 'decorado'];
 const list = (d) => (existsSync(root + d) ? readdirSync(root + d).filter((f) => /\.(png|webp)$/i.test(f)) : []);
 const valid = new Set([...allItemIds(), ...Object.keys(GENERATORS).map((g) => 'gen:' + g)]);

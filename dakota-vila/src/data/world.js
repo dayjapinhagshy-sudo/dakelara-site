@@ -6,6 +6,7 @@ export const CHARACTERS = {
   juninho: { name: 'Juninho', role: 'Primo · 12 anos', bio: 'Inventor mirim, vive de fone no ouvido e conserta tudo na oficina.', look: { skin: '#e8b48c', hair: '#5a3620', style: 'curly', cloth: '#4fb05a', acc: ['headphones'] } },
   sol: { name: 'Sol', role: 'Amigo de infância', bio: 'Músico e barista. Toca violão no píer ao pôr do sol.', look: { skin: '#d9a273', hair: '#2a2230', style: 'short', cloth: '#f5f1e8', acc: ['stubble'] }, romance: true },
   luna: { name: 'Luna', role: 'Melhor amiga', bio: 'Florista da praça, sabe de todas as novidades da vila.', look: { skin: '#f0c4a4', hair: '#231a2a', style: 'straight', cloth: '#f7a6c8', acc: ['earring'] } },
+  evie: { name: 'Evie', role: 'Amiga', bio: 'Fotógrafa e surfista, chegou de mochila para fotografar o farol e acabou ficando. Topa qualquer aventura.', look: { skin: '#f6d2bc', hair: '#c8552e', style: 'wavy', cloth: '#ffd25e', acc: ['freckles', 'earring'] } },
   rafael: { name: 'Rafael', role: 'Chef', bio: 'Chef viajante que parou na vila "por uma semana". Já faz um ano.', look: { skin: '#e0ad82', hair: '#4a2c1a', style: 'short', cloth: '#ffffff', acc: ['beard'] }, romance: true },
   vera: { name: 'Vera', role: 'Rival', bio: 'Empresária elegante que quer comprar a vila inteira para um resort.', look: { skin: '#f5d0b5', hair: '#f0c75e', style: 'wavy', cloth: '#e4576b', acc: ['shades', 'earring'] } },
   teco: { name: 'Teco', role: 'Mascote', bio: 'Vira-lata caramelo com manchas brancas. Fareja confusão de longe.', look: { dog: true } },
@@ -13,7 +14,7 @@ export const CHARACTERS = {
 };
 
 // Clientes que fazem pedidos (ids de CHARACTERS)
-export const CUSTOMERS = ['matilde', 'juninho', 'sol', 'luna', 'rafael', 'vera'];
+export const CUSTOMERS = ['matilde', 'juninho', 'sol', 'luna', 'evie', 'rafael', 'vera'];
 
 // 24 pedidos escritos à mão, servidos em ordem; depois deles os pedidos são gerados.
 // kind: normal | vip | tempo.  lvl = nível mínimo do jogador.
@@ -50,6 +51,7 @@ export const ORDER_LINES = {
   juninho: ['Preciso disso pra uma invenção!', 'Rápido, o Teco tá esperando!', 'Valeu, prima!'],
   sol: ['Combina com o som de hoje.', 'Pra viagem, vou tocar no píer.', 'Você sempre acerta.'],
   luna: ['A vila inteira está comentando disso!', 'Preciso para a floricultura.', 'Depois te conto uma novidade…'],
+  evie: ['Isso vai render uma foto linda!', 'Pra levar no piquenique da praia.', 'Você é demais, amiga!'],
   rafael: ['Ingrediente perfeito, prato perfeito.', 'Estou testando o cardápio novo.', 'O segredo é o frescor.'],
   vera: ['Surpreenda-me, se conseguir.', 'Espero qualidade de resort.', 'Hm. Aceitável.'],
 };

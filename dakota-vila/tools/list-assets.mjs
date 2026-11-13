@@ -12,6 +12,7 @@ const LOOK = {
   juninho: 'menino de 12 anos, cabelo castanho bem cacheado, sardas, fones de ouvido grandes laranja, moletom verde com cordões',
   sol: 'homem de 26 anos, cabelo preto curto e ondulado, barba por fazer, camisa branca aberta no colarinho, fones de ouvido pretos no pescoço, sorriso tranquilo',
   luna: 'mulher de 24 anos, cabelo preto longo e liso repartido ao meio, blusa rosa, pequenos brincos de argola, olhar simpático',
+  evie: 'mulher de 24 anos, cabelo ruivo acobreado longo e ondulado, sardas no nariz e bochechas, olhos verdes, regata amarela com camisa xadrez amarrada na cintura, câmera fotográfica pendurada no pescoço, pequena flor branca no cabelo, sorriso aventureiro',
   rafael: 'homem de 30 anos, cabelo castanho com topete, barba cheia bem aparada, dólmã branca de chef com lenço vermelho',
   vera: 'mulher elegante de 30 anos, cabelo loiro ondulado volumoso, óculos de sol sobre a cabeça, blusa vermelha decotada, batom vermelho, brincos dourados, expressão confiante',
   teco: 'cachorro vira-lata caramelo com manchas brancas no focinho e peito, orelhas caídas, coleira vermelha com medalha dourada, língua de fora',
