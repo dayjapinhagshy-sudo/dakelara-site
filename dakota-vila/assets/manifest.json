@@ -228,6 +228,12 @@
   "areas": {
     "cafeteria:abandonado": "areas/cafeteria-abandonado.webp",
     "cafeteria:decorado": "areas/cafeteria-decorado.webp",
+    "cafeteria:dentro:0": "areas/cafeteria-dentro-0.webp",
+    "cafeteria:dentro:1": "areas/cafeteria-dentro-1.webp",
+    "cafeteria:dentro:decor-rustico": "areas/cafeteria-dentro-decor-rustico.webp",
+    "cafeteria:dentro:moveis-rustico": "areas/cafeteria-dentro-moveis-rustico.webp",
+    "cafeteria:dentro:parede-rustico": "areas/cafeteria-dentro-parede-rustico.webp",
+    "cafeteria:dentro:piso-rustico": "areas/cafeteria-dentro-piso-rustico.webp",
     "cafeteria:limpo": "areas/cafeteria-limpo.webp",
     "cafeteria:reformado": "areas/cafeteria-reformado.webp",
     "casas:abandonado": "areas/casas-abandonado.webp",

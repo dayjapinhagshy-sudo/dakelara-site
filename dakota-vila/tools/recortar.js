@@ -129,9 +129,14 @@ function crop(src, x, y, w, h) { const c = canvasOf(Math.round(w), Math.round(h)
 async function jobs() {
   const list = [];
   for (const file of await (await fetch('/api/originais')).json()) list.push({ file, ...plan(file) });
+  // ?so=74,75 → processa só essas folhas de _entrada (não refaz as antigas)
+  const so = new URLSearchParams(location.search).get('so');
+  const want = so ? new Set(so.split(',').map((n) => `_entrada/${n.trim()}.png`)) : null;
+  if (want) list.length = 0;
   try {
     const r = await fetch('/assets/originais/_folhas.json', { cache: 'no-cache' });
     if (r.ok) for (const [file, j] of Object.entries(await r.json())) {
+      if (want && !want.has(file)) continue;
       const outs = j.nomes.map((n) => { if (!n || n === '-') return null; const p = plan(n + '.png'); return p.error ? { error: `${n}: ${p.error}` } : p.outs[0]; });
       const bad = outs.find((o) => o && o.error);
       list.push(bad ? { file, error: bad.error } : { file, mode: j.modo, cols: j.cols, rows: j.rows, sheet: j.modo === 'grade', limpar: !!j.limpar, outs });

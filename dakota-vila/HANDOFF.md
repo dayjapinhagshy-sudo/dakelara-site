@@ -116,7 +116,7 @@ Convenções:
 
 Ela salva as imagens com qualquer nome na pasta `D:\DAKELARA VILA DAKOTA\dakota vila png` (ou solta em `D:\DAKELARA VILA DAKOTA`) e avisa. O fluxo é:
 
-1. Copiar as imagens novas para `dakota-vila/assets/originais/_entrada/NN.png` (numeração seguida; o próximo número é **74**) e anotar a origem em `assets/originais/_entrada-mapa.txt`.
+1. Copiar as imagens novas para `dakota-vila/assets/originais/_entrada/NN.png` (numeração seguida; o próximo número é **76**) e anotar a origem em `assets/originais/_entrada-mapa.txt`.
 2. Ver as imagens (o jeito mais rápido é uma folha de miniaturas no navegador) e identificar cada objeto.
 3. Descrever cada folha em `assets/originais/_folhas.json`:
    - `{"modo": "grade", "cols": 3, "rows": 2, "nomes": [...]}`: corta em grade (personagens 3×2, prédios 2×2). `"limpar": true` descarta lascas do vizinho.
