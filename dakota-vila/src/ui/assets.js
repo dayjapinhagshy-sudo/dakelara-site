@@ -20,5 +20,7 @@ export const itemArt = (id) => url(M.items[id]);
 export const portraitArt = (id, expr) => url(M.portraits[`${id}:${expr}`] || M.portraits[id]);
 /** Dakota em pose para a tela inicial (characters/dakota-menu.png). */
 export const menuArt = () => url(M.portraits['dakota:menu']);
+/** Interior de uma área: "0" (abandonado), "1" (limpo) ou "<etapa>-<estilo>" (ex.: "piso-rustico"). */
+export const interiorArt = (id, key) => url(M.areas[`${id}:dentro:${key}`]);
 /** Área da vila por estado: "restaurante:decorado", depois "restaurante". */
 export const areaArt = (id, status) => url(M.areas[`${id}:${status}`] || M.areas[id]);

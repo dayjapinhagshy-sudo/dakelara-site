@@ -24,6 +24,9 @@ for (const f of list('characters')) {
   out.portraits[expr ? `${who}:${expr}` : who] = 'characters/' + f;
 }
 for (const f of list('areas')) {
+  // interiores: restaurante-dentro-0 | -dentro-1 | -dentro-piso-rustico …
+  const inside = f.replace(/\.\w+$/, '').match(/^([a-z]+)-dentro-(0|1|(?:piso|parede|moveis|decor)-(?:rustico|tropical|moderno))$/);
+  if (inside && AREAS.some((a) => a.id === inside[1])) { out.areas[`${inside[1]}:dentro:${inside[2]}`] = 'areas/' + f; continue; }
   const [area, st] = f.replace(/\.\w+$/, '').split('-');
   if (!AREAS.some((a) => a.id === area) || (st && !STATES.includes(st))) { warn.push(`areas/${f}: área ou estado desconhecido`); continue; }
   out.areas[st ? `${area}:${st}` : area] = 'areas/' + f;

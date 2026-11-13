@@ -22,6 +22,7 @@ function plan(file) {
   if (CHARACTERS[who] && (!expr || EXPR.includes(expr) || (who === 'dakota' && expr === 'menu')))
     return { outs: [{ f: `characters/${base === who + '-feliz' ? who : base}.webp`, kind: expr === 'menu' ? 'pose' : 'portrait' }] };
   if (ITEMS.has(base)) return { outs: [{ f: `items/${base}.webp`, kind: 'item' }] };
+  if (AREA_IDS.has(who) && /^[a-z]+-dentro-(0|1|(piso|parede|moveis|decor)-(rustico|tropical|moderno))$/.test(base)) return { outs: [{ f: `areas/${base}.webp`, kind: 'interior' }] };
   if (AREA_IDS.has(who) && (!expr || STATES.includes(expr))) return { outs: [{ f: `areas/${base}.webp`, kind: 'area' }] };
   return { error: 'nome não reconhecido (veja os nomes em assets/KIT-PROMPTS.md)' };
 }
@@ -76,7 +77,7 @@ function bbox(cv) {
 }
 
 // Enquadra no tamanho final: retratos e vila com a base no rodapé, itens centralizados
-const FRAME = { portrait: [512, 512, 0.04, 'bottom'], pose: [1024, 1536, 0.03, 'bottom'], item: [256, 256, 0.06, 'center'], area: [768, 768, 0.03, 'bottom'] };
+const FRAME = { portrait: [512, 512, 0.04, 'bottom'], pose: [1024, 1536, 0.03, 'bottom'], item: [256, 256, 0.06, 'center'], area: [768, 768, 0.03, 'bottom'], interior: [768, 512, 0.02, 'center'] };
 function frame(cv, kind) {
   const [W, H, pad, align] = FRAME[kind], b = bbox(cv), out = canvasOf(W, H);
   const s = Math.min((W * (1 - 2 * pad)) / b.w, (H * (1 - 2 * pad)) / b.h);
@@ -124,7 +125,7 @@ async function jobs() {
     if (r.ok) for (const [file, j] of Object.entries(await r.json())) {
       const outs = j.nomes.map((n) => { if (!n || n === '-') return null; const p = plan(n + '.png'); return p.error ? { error: `${n}: ${p.error}` } : p.outs[0]; });
       const bad = outs.find((o) => o && o.error);
-      list.push(bad ? { file, error: bad.error } : { file, mode: j.modo, cols: j.cols, rows: j.rows, sheet: j.modo === 'grade', outs });
+      list.push(bad ? { file, error: bad.error } : { file, mode: j.modo, cols: j.cols, rows: j.rows, sheet: j.modo === 'grade', limpar: !!j.limpar, outs });
     }
   } catch (e) { console.warn('[folhas]', e); }
   return list;
@@ -152,7 +153,13 @@ async function processAll() {
         cells = objs.map((b) => crop(whole, Math.max(0, b.x - pad), Math.max(0, b.y - pad), Math.min(whole.width - b.x + pad, b.w + 2 * pad), Math.min(whole.height - b.y + pad, b.h + 2 * pad)));
       } else {
         const cols = p.sheet ? p.cols : 1, rows = p.sheet ? p.rows : 1, cw = whole.width / cols, ch = whole.height / rows;
-        cells = p.outs.slice(0, cols * rows).map((_, k) => { const c = crop(whole, (k % cols) * cw, Math.floor(k / cols) * ch, cw, ch); removeBg(c); return c; });
+        cells = p.outs.slice(0, cols * rows).map((_, k) => {
+          const c = crop(whole, (k % cols) * cw, Math.floor(k / cols) * ch, cw, ch); removeBg(c);
+          if (!p.limpar) return c;
+          // "limpar": fica só com o maior objeto da célula (tira lascas do vizinho que invadiram a grade)
+          const big = findObjects(c, 0.004).sort((a, b) => b.w * b.h - a.w * a.h)[0];
+          return big ? crop(c, big.x, big.y, big.w, big.h) : c;
+        });
       }
       cells.forEach((cell, k) => {
         const o = p.outs[k];

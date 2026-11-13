@@ -2,7 +2,7 @@
 import { CHARACTERS, STYLES, AREAS } from '../data/world.js';
 
 import { shade, portrait } from './portraits.js';
-import { areaArt, menuArt } from './assets.js';
+import { areaArt, menuArt, interiorArt } from './assets.js';
 export { shade };
 
 export { portrait };
@@ -264,7 +264,16 @@ export function areaZoom(a, info) {
 }
 
 /** Interior do restaurante: cada escolha (piso, parede, móveis, decoração) muda o cenário de verdade. */
+// Qual imagem de interior mostrar: a última etapa de dentro já feita, no estilo escolhido nela.
+const INSIDE = ['piso', 'parede', 'moveis', 'decor'];
+export function interiorKey(a, info) {
+  for (let i = info.step - 1; i >= 0; i--) { const c = a.steps[i] && a.steps[i].choice; if (INSIDE.includes(c) && info.choices[c]) return `${c}-${info.choices[c]}`; }
+  return info.step >= 1 ? '1' : '0';
+}
+
 export function interiorSvg(info) {
+  const img = info.a && interiorArt(info.a.id, interiorKey(info.a, info));
+  if (img) return `<svg class="zoom" viewBox="0 0 360 250"><rect width="360" height="250" fill="#f7e4d4"/><image href="${img}" x="4" y="6" width="352" height="238" preserveAspectRatio="xMidYMid meet"/></svg>`;
   const { step, choices } = info;
   const ab = step === 0;
   const wall = choices.parede ? STYLES[choices.parede] : null, floor = choices.piso ? STYLES[choices.piso] : null;
