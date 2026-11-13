@@ -280,5 +280,6 @@
     "salao:decorado": "areas/salao-decorado.webp",
     "salao:limpo": "areas/salao-limpo.webp",
     "salao:reformado": "areas/salao-reformado.webp"
-  }
+  },
+  "scenery": {}
 }

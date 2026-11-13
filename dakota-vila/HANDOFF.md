@@ -124,7 +124,7 @@ Ela salva as imagens com qualquer nome na pasta `D:\DAKELARA VILA DAKOTA\dakota 
 4. `npm run recortar` → abrir http://localhost:8090/tools/recortar.html → **Processar** (confere as prévias) → **Salvar no jogo** (salva WebP e roda o manifesto).
 5. Conferir no jogo e fazer commit.
 
-**Nomes aceitos** (sem extensão): personagens `dakota`, `dakota-rindo` (`rindo|neutro|triste|surpreso|bravo`), `dakota-menu`; itens `cafe-3`, `gen-cafe`; áreas `restaurante-abandonado|limpo|reformado|decorado`; interiores `restaurante-dentro-0` (abandonado), `-dentro-1` (limpo), `-dentro-<piso|parede|moveis|decor>-<rustico|tropical|moderno>`. Lista completa: `assets/LISTA.md`.
+**Nomes aceitos** (sem extensão): personagens `dakota`, `dakota-rindo` (`rindo|neutro|triste|surpreso|bravo`), `dakota-menu`; itens `cafe-3`, `gen-cafe`; áreas `restaurante-abandonado|limpo|reformado|decorado`; interiores `restaurante-dentro-0` (abandonado), `-dentro-1` (limpo), `-dentro-<piso|parede|moveis|decor>-<rustico|tropical|moderno>`; **paisagem da vila** `vila-fundo` (ilha + mar inteiros, vira 1600×1000 sem tirar fundo; substitui mar, grama, calçadas e barcos desenhados) e enfeites `enfeite-palmeira|arvore-rosa|arvore-verde|flores|poste|farol` (384 px, base no rodapé). Lista completa: `assets/LISTA.md`.
 
 **Importante:** `assets/originais/` **não vai para o git** (`.gitignore`; são ~90 MB). Numa conta/PC novo essa pasta não existe; só os WebP finais em `assets/characters|items|areas` estão no repositório. Para reprocessar algo, é preciso a imagem original da autora.
 

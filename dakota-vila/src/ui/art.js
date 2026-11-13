@@ -2,7 +2,7 @@
 import { CHARACTERS, STYLES, AREAS } from '../data/world.js';
 
 import { shade, portrait } from './portraits.js';
-import { areaArt, menuArt, interiorArt } from './assets.js';
+import { areaArt, menuArt, interiorArt, sceneryArt } from './assets.js';
 export { shade };
 
 export { portrait };
@@ -212,6 +212,10 @@ export function villageSvg(infoOf, lvl) {
   const c = [iso(-0.6, -0.6), iso(12.2, -0.6), iso(12.2, 12.2), iso(-0.6, 12.2)];
   const g = [iso(0, 0), iso(11.6, 0), iso(11.6, 7.2), iso(7.2, 11.6), iso(0, 11.6)];
   let s = `<svg class="village" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">${VDEFS}<rect width="${W}" height="${H}" fill="url(#v-sea)"/>`;
+  // Paisagem em imagem 3D (areas/vila-fundo.webp): substitui mar, ilha, grama, calçadas e barcos desenhados
+  const fundo = sceneryArt('fundo');
+  if (fundo) s += `<image href="${fundo}" x="0" y="0" width="${W}" height="${H}" preserveAspectRatio="xMidYMid slice"/>`;
+  else {
   for (let i = 0; i < 26; i++) s += `<path class="wave" style="animation-delay:${-i * 0.37}s" d="M${(i * 197) % W} ${30 + ((i * 131) % (H - 60))} q12 -8 24 0 t24 0" stroke="#fff" stroke-width="2.5" fill="none" opacity=".55" stroke-linecap="round"/>`;
   for (let i = 0; i < 18; i++) s += `<circle class="tw" cx="${(i * 263) % W}" cy="${(i * 173) % H}" r="2" fill="#fff" opacity=".8"/>`;
   // ilha: espuma, areia, grama com bordas arredondadas
@@ -225,18 +229,22 @@ export function villageSvg(infoOf, lvl) {
   s += path([[0.8, 3.6], [10.4, 3.6]]) + path([[3.6, 0.8], [3.6, 10]]) + path([[0.8, 6.7], [11, 6.7]]) + path([[6.7, 0.8], [6.7, 10.2]]) + path([[6.7, 6.7], [9.2, 9.2]]);
   // barcos e gaivotas no mar
   for (const [x, y, col, sc] of [[1380, 820, '#ff7f6e', 1], [180, 860, '#5aa7ff', 0.85], [1480, 260, '#ffcc33', 0.75], [120, 220, '#ff8fc4', 0.7]]) s += `<g class="boat" transform="translate(${x} ${y}) scale(${sc})"><ellipse cx="0" cy="10" rx="40" ry="8" fill="#1d8fcf" opacity=".4"/><path d="M-36 -2 Q0 22 38 -4 L30 -12 L-30 -8Z" fill="#fff" stroke="#c9d6e6" stroke-width="2"/><path d="M-30 -6 L30 -10" stroke="${col}" stroke-width="5"/><rect x="-10" y="-26" width="22" height="14" rx="3" fill="#fff" stroke="#c9d6e6" stroke-width="2"/><rect x="-6" y="-23" width="6" height="6" rx="1" fill="#9fdcf5"/><rect x="3" y="-23" width="6" height="6" rx="1" fill="#9fdcf5"/></g>`;
+  }
   for (const [x, y] of [[320, 120], [360, 100], [1260, 140], [1110, 70], [700, 50]]) s += `<path d="M${x - 9} ${y} q4.5 -6 9 0 q4.5 -6 9 0" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round"/>`;
   const things = [], labels = [];
+  // enfeite em imagem 3D (areas/enfeite-*.webp), com a base no ponto (x, y); null = usa o desenho
+  const deco = (k, x, y, w) => { const img = sceneryArt(k); return img ? `<image href="${img}" x="${x - w / 2}" y="${y - w * 0.97}" width="${w}" height="${w}"/>` : null; };
   // farol
   const [fx, fy] = iso(0.4, 10.9);
-  things.push([11.3, `<g>${shadowE(fx + 6, fy + 4, 30, 10)}<path d="M${fx - 15} ${fy} L${fx - 9} ${fy - 72} h18 L${fx + 15} ${fy}Z" fill="#fff"/><path d="M${fx + 2} ${fy} L${fx + 4} ${fy - 72} h5 L${fx + 15} ${fy}Z" fill="#e6e0ee"/><path d="M${fx - 13.2} ${fy - 22} h26.4 l-1.2 -14 h-24Z M${fx - 10.4} ${fy - 54} h20.8 l-.8 -10 h-19.2Z" fill="#e4576b"/>
+  const farol = deco('farol', fx, fy + 6, 130);
+  things.push([11.3, farol || `<g>${shadowE(fx + 6, fy + 4, 30, 10)}<path d="M${fx - 15} ${fy} L${fx - 9} ${fy - 72} h18 L${fx + 15} ${fy}Z" fill="#fff"/><path d="M${fx + 2} ${fy} L${fx + 4} ${fy - 72} h5 L${fx + 15} ${fy}Z" fill="#e6e0ee"/><path d="M${fx - 13.2} ${fy - 22} h26.4 l-1.2 -14 h-24Z M${fx - 10.4} ${fy - 54} h20.8 l-.8 -10 h-19.2Z" fill="#e4576b"/>
     <rect x="${fx - 12}" y="${fy - 86}" width="24" height="14" rx="3" fill="${lvl >= 6 ? '#ffe08a' : '#a9c2d6'}" stroke="#4a5b78" stroke-width="2.5"/>${lvl >= 6 ? `<circle class="tw" cx="${fx}" cy="${fy - 79}" r="26" fill="#ffe08a" opacity=".25"/>` : ''}<path d="M${fx - 15} ${fy - 86} L${fx} ${fy - 100} L${fx + 15} ${fy - 86}Z" fill="#4a5b78"/><rect x="${fx - 16}" y="${fy - 74}" width="32" height="4" rx="2" fill="#4a5b78"/></g>`]);
   const TREES = [[0.5, 0.7, 'p'], [1.1, 4.7, 'pink'], [10.7, 0.9, 'p'], [4.5, 0.6, 'pink'], [0.6, 7.7, 'p'], [7.6, 0.6, 'green'], [10.9, 4.4, 'p'], [4.7, 10.8, 'p'], [7.1, 11.1, 'p'], [11.1, 7.7, 'p'],
     [3.1, 6.4, 'pink'], [9.9, 3.1, 'green'], [7.3, 4.1, 'pink'], [4.2, 4.3, 'green'], [0.5, 2.6, 'green'], [2.7, 0.5, 'pink'], [9.4, 0.6, 'pink'], [11.2, 2.6, 'green'], [0.6, 9.4, 'pink'], [6.2, 9.8, 'pink'],
     [9.6, 6.3, 'green'], [6.3, 6.1, 'pink'], [1.2, 10.3, 'p'], [10.4, 7.1, 'pink'], [4.2, 7.3, 'green'], [7.3, 7.6, 'pink'], [5.1, 3.9, 'pink'], [2.4, 3.1, 'green']];
-  for (const [x, y, t] of TREES) { const [px, py] = iso(x, y); things.push([x + y, t === 'p' ? palm(px, py, 0.95) : tree(px, py, 0.85, t)]); }
-  for (const [x, y] of [[3.1, 4.2], [4.2, 3.1], [6.2, 3.1], [3.1, 7.3], [7.2, 6.2], [6.2, 7.3], [9.9, 4.2], [1.4, 6.2]]) { const [px, py] = iso(x, y); things.push([x + y - 0.2, flowers(px, py, 7, 14)]); }
-  for (const [x, y] of [[3.9, 3.3], [6.4, 3.3], [3.3, 6.4], [6.9, 7.1], [9.1, 6.4]]) { const [px, py] = iso(x, y); things.push([x + y, `<rect x="${px - 1.5}" y="${py - 30}" width="3" height="30" fill="#4a5b78"/><circle class="tw" cx="${px}" cy="${py - 33}" r="5" fill="#ffe08a" stroke="#4a5b78" stroke-width="1.5"/>`]); }
+  for (const [x, y, t] of TREES) { const [px, py] = iso(x, y); things.push([x + y, (t === 'p' ? deco('palmeira', px, py, 100) || palm(px, py, 0.95) : deco(t === 'pink' ? 'arvore-rosa' : 'arvore-verde', px, py, 84) || tree(px, py, 0.85, t))]); }
+  for (const [x, y] of [[3.1, 4.2], [4.2, 3.1], [6.2, 3.1], [3.1, 7.3], [7.2, 6.2], [6.2, 7.3], [9.9, 4.2], [1.4, 6.2]]) { const [px, py] = iso(x, y); things.push([x + y - 0.2, deco('flores', px, py + 4, 46) || flowers(px, py, 7, 14)]); }
+  for (const [x, y] of [[3.9, 3.3], [6.4, 3.3], [3.3, 6.4], [6.9, 7.1], [9.1, 6.4]]) { const [px, py] = iso(x, y); things.push([x + y, deco('poste', px, py, 52) || `<rect x="${px - 1.5}" y="${py - 30}" width="3" height="30" fill="#4a5b78"/><circle class="tw" cx="${px}" cy="${py - 33}" r="5" fill="#ffe08a" stroke="#4a5b78" stroke-width="1.5"/>`]); }
   for (const a of AREAS) {
     const info = infoOf(a.id), [cx, cy] = iso(a.pos[0], a.pos[1]);
     const locked = !info.unlocked;

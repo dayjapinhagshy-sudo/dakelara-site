@@ -6,6 +6,8 @@ const EXPR = ['feliz', 'rindo', 'neutro', 'triste', 'surpreso', 'bravo'];
 const STATES = ['abandonado', 'limpo', 'reformado', 'decorado'];
 const ITEMS = new Set(allItemIds().map((id) => id.replace(':', '-')).concat(Object.keys(GENERATORS).map((g) => 'gen-' + g)));
 const AREA_IDS = new Set(AREAS.map((a) => a.id));
+// Paisagem da vila: fundo inteiro (ilha + mar) e enfeites soltos
+export const SCENERY = ['palmeira', 'arvore-rosa', 'arvore-verde', 'flores', 'poste', 'farol'];
 const $ = (q) => document.querySelector(q);
 let results = [];
 
@@ -21,6 +23,8 @@ function plan(file) {
   const [who, expr] = base.split('-');
   if (CHARACTERS[who] && (!expr || EXPR.includes(expr) || (who === 'dakota' && expr === 'menu')))
     return { outs: [{ f: `characters/${base === who + '-feliz' ? who : base}.webp`, kind: expr === 'menu' ? 'pose' : 'portrait' }] };
+  if (base === 'vila-fundo') return { outs: [{ f: 'areas/vila-fundo.webp', kind: 'fundo' }] };
+  if (SCENERY.includes(base.replace(/^enfeite-/, '')) && base.startsWith('enfeite-')) return { outs: [{ f: `areas/${base}.webp`, kind: 'enfeite' }] };
   if (ITEMS.has(base)) return { outs: [{ f: `items/${base}.webp`, kind: 'item' }] };
   if (AREA_IDS.has(who) && /^[a-z]+-dentro-(0|1|(piso|parede|moveis|decor)-(rustico|tropical|moderno))$/.test(base)) return { outs: [{ f: `areas/${base}.webp`, kind: 'interior' }] };
   if (AREA_IDS.has(who) && (!expr || STATES.includes(expr))) return { outs: [{ f: `areas/${base}.webp`, kind: 'area' }] };
@@ -77,8 +81,13 @@ function bbox(cv) {
 }
 
 // Enquadra no tamanho final: retratos e vila com a base no rodapé, itens centralizados
-const FRAME = { portrait: [512, 512, 0.04, 'bottom'], pose: [1024, 1536, 0.03, 'bottom'], item: [256, 256, 0.06, 'center'], area: [768, 768, 0.03, 'bottom'], interior: [768, 512, 0.02, 'center'] };
+const FRAME = { portrait: [512, 512, 0.04, 'bottom'], pose: [1024, 1536, 0.03, 'bottom'], item: [256, 256, 0.06, 'center'], area: [768, 768, 0.03, 'bottom'], interior: [768, 512, 0.02, 'center'], enfeite: [384, 384, 0.03, 'bottom'] };
 function frame(cv, kind) {
+  if (kind === 'fundo') { // paisagem: preenche 1600×1000 inteiro (corta as sobras, sem deformar)
+    const out = canvasOf(1600, 1000), s = Math.max(1600 / cv.width, 1000 / cv.height), w = cv.width * s, h = cv.height * s;
+    const ctx = out.getContext('2d'); ctx.imageSmoothingQuality = 'high'; ctx.drawImage(cv, (1600 - w) / 2, (1000 - h) / 2, w, h);
+    return out;
+  }
   const [W, H, pad, align] = FRAME[kind], b = bbox(cv), out = canvasOf(W, H);
   const s = Math.min((W * (1 - 2 * pad)) / b.w, (H * (1 - 2 * pad)) / b.h);
   const w = b.w * s, h = b.h * s, x = (W - w) / 2, y = align === 'bottom' ? H - h : (H - h) / 2;
@@ -154,7 +163,9 @@ async function processAll() {
       } else {
         const cols = p.sheet ? p.cols : 1, rows = p.sheet ? p.rows : 1, cw = whole.width / cols, ch = whole.height / rows;
         cells = p.outs.slice(0, cols * rows).map((_, k) => {
-          const c = crop(whole, (k % cols) * cw, Math.floor(k / cols) * ch, cw, ch); removeBg(c);
+          const c = crop(whole, (k % cols) * cw, Math.floor(k / cols) * ch, cw, ch);
+          if (p.outs[k] && p.outs[k].kind === 'fundo') return c; // o fundo da vila é a imagem inteira, com o mar
+          removeBg(c);
           if (!p.limpar) return c;
           // "limpar": fica só com o maior objeto da célula (tira lascas do vizinho que invadiram a grade)
           const big = findObjects(c, 0.004).sort((a, b) => b.w * b.h - a.w * a.h)[0];

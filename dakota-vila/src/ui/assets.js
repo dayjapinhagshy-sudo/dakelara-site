@@ -1,9 +1,9 @@
 // Arte opcional em imagem (ex.: renders 3D em PNG). O que estiver listado em assets/manifest.json
 // substitui o emoji/SVG correspondente; o que faltar continua com a arte gerada por código.
-let M = { items: {}, portraits: {}, areas: {} };
+let M = { items: {}, portraits: {}, areas: {}, scenery: {} };
 
 export function setManifest(m) {
-  M = { items: {}, portraits: {}, areas: {}, ...(m || {}) };
+  M = { items: {}, portraits: {}, areas: {}, scenery: {}, ...(m || {}) };
   return M;
 }
 export async function loadManifest(url = 'assets/manifest.json') {
@@ -24,3 +24,5 @@ export const menuArt = () => url(M.portraits['dakota:menu']);
 export const interiorArt = (id, key) => url(M.areas[`${id}:dentro:${key}`]);
 /** Área da vila por estado: "restaurante:decorado", depois "restaurante". */
 export const areaArt = (id, status) => url(M.areas[`${id}:${status}`] || M.areas[id]);
+/** Paisagem da vila: "fundo" (ilha + mar, 1600×1000) ou um enfeite ("palmeira", "arvore-rosa", "flores", "poste", "farol"…). */
+export const sceneryArt = (k) => url(M.scenery[k]);

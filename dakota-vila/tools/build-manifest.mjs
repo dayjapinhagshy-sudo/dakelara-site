@@ -23,7 +23,13 @@ for (const f of list('characters')) {
   if (!CHARACTERS[who] || (expr && !EXPR.includes(expr))) { warn.push(`characters/${f}: personagem ou expressão desconhecida`); continue; }
   out.portraits[expr ? `${who}:${expr}` : who] = 'characters/' + f;
 }
+const SCENERY = ['palmeira', 'arvore-rosa', 'arvore-verde', 'flores', 'poste', 'farol'];
+out.scenery = {};
 for (const f of list('areas')) {
+  // paisagem da vila: vila-fundo (ilha + mar) e enfeite-palmeira, enfeite-flores …
+  const base = f.replace(/\.\w+$/, '');
+  if (base === 'vila-fundo') { out.scenery.fundo = 'areas/' + f; continue; }
+  if (base.startsWith('enfeite-')) { const k = base.slice(8); if (SCENERY.includes(k)) out.scenery[k] = 'areas/' + f; else warn.push(`areas/${f}: enfeite desconhecido`); continue; }
   // interiores: restaurante-dentro-0 | -dentro-1 | -dentro-piso-rustico …
   const inside = f.replace(/\.\w+$/, '').match(/^([a-z]+)-dentro-(0|1|(?:piso|parede|moveis|decor)-(?:rustico|tropical|moderno))$/);
   if (inside && AREAS.some((a) => a.id === inside[1])) { out.areas[`${inside[1]}:dentro:${inside[2]}`] = 'areas/' + f; continue; }
@@ -32,5 +38,5 @@ for (const f of list('areas')) {
   out.areas[st ? `${area}:${st}` : area] = 'areas/' + f;
 }
 writeFileSync(root + 'manifest.json', JSON.stringify(out, null, 2) + '\n');
-console.log(`manifest.json: ${Object.keys(out.items).length} itens, ${Object.keys(out.portraits).length} retratos, ${Object.keys(out.areas).length} áreas`);
+console.log(`manifest.json: ${Object.keys(out.items).length} itens, ${Object.keys(out.portraits).length} retratos, ${Object.keys(out.areas).length} áreas, ${Object.keys(out.scenery).length} de paisagem`);
 for (const w of warn) console.warn('aviso:', w);

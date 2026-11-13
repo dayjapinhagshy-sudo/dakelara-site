@@ -596,3 +596,17 @@ test('cafeteria com interior: 6 etapas e saves antigos (3 etapas) convertidos se
   const c = fresh(); c.village.cafeteria = { step: 2, choices: { piso: 'moderno' } };
   assert.equal(S.deserialize(S.serialize(c), T0).village.cafeteria.step, 2);
 });
+
+test('paisagem da vila: fundo e enfeites em imagem entram no mapa; sem imagem, continua desenhado', async () => {
+  const A = await import('../src/ui/assets.js');
+  const art = await import('../src/ui/art.js');
+  const info = (id) => M.areaInfo(fresh(), id);
+  A.setManifest({ scenery: { fundo: 'areas/vila-fundo.webp', palmeira: 'areas/enfeite-palmeira.webp' } });
+  const com = art.villageSvg(info, 1);
+  assert.ok(com.includes('assets/areas/vila-fundo.webp'));
+  assert.ok(com.includes('assets/areas/enfeite-palmeira.webp'));
+  assert.ok(!com.includes('class="boat"'), 'com fundo em imagem, os barcos desenhados saem');
+  A.setManifest(null);
+  const sem = art.villageSvg(info, 1);
+  assert.ok(!sem.includes('vila-fundo') && sem.includes('class="boat"'));
+});
