@@ -61,7 +61,7 @@ span.pill { flex: none; padding: 4px 10px; font-weight: 800; }
 .title-hero { width: 100%; aspect-ratio: 1; border-radius: 50% 50% 30px 30px; overflow: hidden; border: 6px solid #fff; box-shadow: var(--shadow); }
 .title-cup { position: absolute; left: -17%; bottom: -8%; width: 46%; filter: drop-shadow(0 6px 6px rgba(74, 42, 94, .25)); }
 .title-cup svg, .title-pose img { display: block; width: 100%; height: auto; }
-.title-pose.img { width: max(110px, min(80vw, 340px, calc((100dvh - 432px) / 1.5))); }
+.title-pose.img { width: max(80px, min(80vw, 340px, calc((86dvh - 362px) / 1.5))); } /* altura = espaço entre o topo e os botões */
 .title-pose img { filter: drop-shadow(0 8px 12px rgba(74, 42, 94, .25)); }
 .steam { animation: tw 2s ease-in-out infinite; }
 @keyframes bob { 50% { transform: translateX(-50%) translateY(-8px); } }

@@ -11,6 +11,8 @@
     "cafe:4": "items/cafe-4.webp",
     "cafe:5": "items/cafe-5.webp",
     "cafe:6": "items/cafe-6.webp",
+    "cafe:7": "items/cafe-7.webp",
+    "cafe:8": "items/cafe-8.webp",
     "ceram:1": "items/ceram-1.webp",
     "ceram:2": "items/ceram-2.webp",
     "ceram:3": "items/ceram-3.webp",
@@ -101,12 +103,15 @@
     "joia:4": "items/joia-4.webp",
     "joia:5": "items/joia-5.webp",
     "joia:6": "items/joia-6.webp",
+    "joia:7": "items/joia-7.webp",
     "maq:1": "items/maq-1.webp",
     "maq:2": "items/maq-2.webp",
     "maq:3": "items/maq-3.webp",
     "maq:4": "items/maq-4.webp",
     "maq:5": "items/maq-5.webp",
     "maq:6": "items/maq-6.webp",
+    "maq:7": "items/maq-7.webp",
+    "maq:8": "items/maq-8.webp",
     "mar:1": "items/mar-1.webp",
     "mar:2": "items/mar-2.webp",
     "mar:3": "items/mar-3.webp",
@@ -159,6 +164,7 @@
   },
   "portraits": {
     "dakota:bravo": "characters/dakota-bravo.webp",
+    "dakota:menu": "characters/dakota-menu.webp",
     "dakota:neutro": "characters/dakota-neutro.webp",
     "dakota:rindo": "characters/dakota-rindo.webp",
     "dakota:surpreso": "characters/dakota-surpreso.webp",
@@ -255,6 +261,10 @@
     "restaurante:abandonado": "areas/restaurante-abandonado.webp",
     "restaurante:decorado": "areas/restaurante-decorado.webp",
     "restaurante:limpo": "areas/restaurante-limpo.webp",
-    "restaurante:reformado": "areas/restaurante-reformado.webp"
+    "restaurante:reformado": "areas/restaurante-reformado.webp",
+    "salao:abandonado": "areas/salao-abandonado.webp",
+    "salao:decorado": "areas/salao-decorado.webp",
+    "salao:limpo": "areas/salao-limpo.webp",
+    "salao:reformado": "areas/salao-reformado.webp"
   }
 }
