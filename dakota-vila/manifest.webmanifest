@@ -1,0 +1,12 @@
+{
+  "name": "Dakota Vila",
+  "short_name": "Dakota Vila",
+  "description": "Combine itens, atenda os vizinhos e reconstrua a vila.",
+  "lang": "pt-BR",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f3d9ff",
+  "theme_color": "#b56be0",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+}

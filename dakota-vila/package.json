@@ -1,0 +1,11 @@
+{
+  "name": "dakota-vila",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Dakota Vila — jogo Merge-2 com vila, reformas e histórias",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test tests/*.test.js"
+  }
+}
