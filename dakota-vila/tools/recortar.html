@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Recorte de arte · Dakota Vila</title>
+<style>
+  body { margin: 0; font-family: "Segoe UI", system-ui, sans-serif; background: #f6e9ff; color: #4a2a5e; }
+  header { padding: 14px 18px; background: linear-gradient(#c58cf2, #a86be0); color: #fff; }
+  h1 { margin: 0; font-size: 1.2rem; }
+  main { padding: 14px 18px; max-width: 1100px; margin: 0 auto; }
+  .help { background: #fff; border-radius: 14px; padding: 10px 14px; font-size: .9rem; line-height: 1.45; }
+  .help code { background: #f1e3ff; padding: 1px 5px; border-radius: 5px; }
+  button { font: inherit; font-weight: 700; border: 0; border-radius: 999px; padding: .6em 1.2em; cursor: pointer; background: linear-gradient(#5fe39a, #3ecf7a); color: #fff; box-shadow: 0 3px 0 #24a55a; }
+  button:disabled { filter: grayscale(1); opacity: .6; cursor: default; }
+  .bar { display: flex; gap: 10px; align-items: center; margin: 12px 0; flex-wrap: wrap; }
+  #log { font-size: .85rem; white-space: pre-wrap; }
+  .src { background: #fff; border-radius: 14px; padding: 10px; margin: 12px 0; }
+  .src h2 { font-size: .95rem; margin: 0 0 6px; }
+  .src.err h2 { color: #d4553a; }
+  .outs { display: flex; flex-wrap: wrap; gap: 10px; }
+  figure { margin: 0; text-align: center; font-size: .75rem; }
+  figure canvas { width: 150px; height: auto; border-radius: 10px; display: block;
+    background: repeating-conic-gradient(#eee 0 25%, #fff 0 50%) 0 0 / 16px 16px; box-shadow: 0 0 0 2px #e2c4ff; }
+</style>
+</head>
+<body>
+<header><h1>✂️ Recorte de arte do Dakota Vila</h1></header>
+<main>
+  <div class="help">
+    Salve as imagens da IA em <code>assets/originais/</code> com estes nomes e toque em <b>Processar</b>:
+    <ul>
+      <li><code>evie-expressoes.png</code> → folha 3×2 com as 6 expressões na ordem: feliz, rindo, neutro / triste, surpreso, bravo.
+        Outro formato de grade: <code>evie-expressoes-2x3.png</code> (colunas×linhas).</li>
+      <li><code>evie.png</code>, <code>evie-rindo.png</code>, <code>dakota-menu.png</code> → um personagem por imagem.</li>
+      <li><code>gen-cafe.png</code>, <code>cafe-3.png</code> → itens · <code>restaurante-decorado.png</code> → vila.</li>
+    </ul>
+    O fundo liso (branco ou xadrez falso de "transparente") é removido sozinho. Confira as prévias antes de salvar.
+  </div>
+  <div class="bar"><button id="go">Processar</button><button id="save" disabled>Salvar no jogo</button><span id="log"></span></div>
+  <div id="out"></div>
+</main>
+<script type="module" src="recortar.js"></script>
+</body>
+</html>

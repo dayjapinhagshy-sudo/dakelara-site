@@ -1,0 +1,28 @@
+// Arte opcional em imagem (ex.: renders 3D em PNG). O que estiver listado em assets/manifest.json
+// substitui o emoji/SVG correspondente; o que faltar continua com a arte gerada por código.
+let M = { items: {}, portraits: {}, areas: {}, scenery: {} };
+
+export function setManifest(m) {
+  M = { items: {}, portraits: {}, areas: {}, scenery: {}, ...(m || {}) };
+  return M;
+}
+export async function loadManifest(url = 'assets/manifest.json') {
+  try {
+    const r = await fetch(url, { cache: 'no-cache' });
+    if (!r.ok) return setManifest(null);
+    return setManifest(await r.json());
+  } catch (e) { console.warn('[assets] manifesto indisponível, usando arte gerada', e); return setManifest(null); }
+}
+const url = (p) => (p ? 'assets/' + p : null);
+/** Imagem de um item ("cafe:3") ou gerador ("gen:cafe"). */
+export const itemArt = (id) => url(M.items[id]);
+/** Retrato: tenta "dakota:rindo", depois "dakota". */
+export const portraitArt = (id, expr) => url(M.portraits[`${id}:${expr}`] || M.portraits[id]);
+/** Dakota em pose para a tela inicial (characters/dakota-menu.png). */
+export const menuArt = () => url(M.portraits['dakota:menu']);
+/** Interior de uma área: "0" (abandonado), "1" (limpo) ou "<etapa>-<estilo>" (ex.: "piso-rustico"). */
+export const interiorArt = (id, key) => url(M.areas[`${id}:dentro:${key}`]);
+/** Área da vila por estado: "restaurante:decorado", depois "restaurante". */
+export const areaArt = (id, status) => url(M.areas[`${id}:${status}`] || M.areas[id]);
+/** Paisagem da vila: "fundo" (ilha + mar, 1600×1000) ou um enfeite ("palmeira", "arvore-rosa", "flores", "poste", "farol"…). */
+export const sceneryArt = (k) => url(M.scenery[k]);

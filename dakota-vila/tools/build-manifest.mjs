@@ -1,0 +1,42 @@
+// Gera assets/manifest.json a partir dos PNG/WebP nas pastas de assets.
+// Nomes: items/cafe-3.png → "cafe:3" · items/gen-cafe.png → "gen:cafe"
+//        characters/dakota.png ou dakota-rindo.png · areas/restaurante-decorado.png
+import { readdirSync, writeFileSync, existsSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import { allItemIds, GENERATORS } from '../src/data/items.js';
+import { CHARACTERS, AREAS } from '../src/data/world.js';
+
+const root = fileURLToPath(new URL('../assets/', import.meta.url));
+const EXPR = ['feliz', 'rindo', 'neutro', 'triste', 'surpreso', 'bravo', 'menu']; // "menu" = pose da tela inicial (só dakota)
+const STATES = ['abandonado', 'limpo', 'reformado', 'decorado'];
+const list = (d) => (existsSync(root + d) ? readdirSync(root + d).filter((f) => /\.(png|webp)$/i.test(f)) : []);
+const valid = new Set([...allItemIds(), ...Object.keys(GENERATORS).map((g) => 'gen:' + g)]);
+const out = { items: {}, portraits: {}, areas: {} }, warn = [];
+
+for (const f of list('items')) {
+  const base = f.replace(/\.\w+$/, ''), m = base.match(/^(.+)-(\d+)$/);
+  const id = base.startsWith('gen-') ? 'gen:' + base.slice(4) : m ? `${m[1]}:${m[2]}` : base;
+  if (valid.has(id)) out.items[id] = 'items/' + f; else warn.push(`items/${f}: nenhum item "${id}"`);
+}
+for (const f of list('characters')) {
+  const [who, expr] = f.replace(/\.\w+$/, '').split('-');
+  if (!CHARACTERS[who] || (expr && !EXPR.includes(expr))) { warn.push(`characters/${f}: personagem ou expressão desconhecida`); continue; }
+  out.portraits[expr ? `${who}:${expr}` : who] = 'characters/' + f;
+}
+const SCENERY = ['palmeira', 'arvore-rosa', 'arvore-verde', 'flores', 'poste', 'farol'];
+out.scenery = {};
+for (const f of list('areas')) {
+  // paisagem da vila: vila-fundo (ilha + mar) e enfeite-palmeira, enfeite-flores …
+  const base = f.replace(/\.\w+$/, '');
+  if (base === 'vila-fundo') { out.scenery.fundo = 'areas/' + f; continue; }
+  if (base.startsWith('enfeite-')) { const k = base.slice(8); if (SCENERY.includes(k)) out.scenery[k] = 'areas/' + f; else warn.push(`areas/${f}: enfeite desconhecido`); continue; }
+  // interiores: restaurante-dentro-0 | -dentro-1 | -dentro-piso-rustico …
+  const inside = f.replace(/\.\w+$/, '').match(/^([a-z]+)-dentro-(0|1|(?:piso|parede|moveis|decor)-(?:rustico|tropical|moderno))$/);
+  if (inside && AREAS.some((a) => a.id === inside[1])) { out.areas[`${inside[1]}:dentro:${inside[2]}`] = 'areas/' + f; continue; }
+  const [area, st] = f.replace(/\.\w+$/, '').split('-');
+  if (!AREAS.some((a) => a.id === area) || (st && !STATES.includes(st))) { warn.push(`areas/${f}: área ou estado desconhecido`); continue; }
+  out.areas[st ? `${area}:${st}` : area] = 'areas/' + f;
+}
+writeFileSync(root + 'manifest.json', JSON.stringify(out, null, 2) + '\n');
+console.log(`manifest.json: ${Object.keys(out.items).length} itens, ${Object.keys(out.portraits).length} retratos, ${Object.keys(out.areas).length} áreas, ${Object.keys(out.scenery).length} de paisagem`);
+for (const w of warn) console.warn('aviso:', w);
