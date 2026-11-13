@@ -288,6 +288,12 @@
     "salao:reformado": "areas/salao-reformado.webp"
   },
   "scenery": {
+    "arvore-rosa": "areas/enfeite-arvore-rosa.webp",
+    "arvore-verde": "areas/enfeite-arvore-verde.webp",
+    "farol": "areas/enfeite-farol.webp",
+    "flores": "areas/enfeite-flores.webp",
+    "palmeira": "areas/enfeite-palmeira.webp",
+    "poste": "areas/enfeite-poste.webp",
     "fundo": "areas/vila-fundo.webp"
   }
 }
