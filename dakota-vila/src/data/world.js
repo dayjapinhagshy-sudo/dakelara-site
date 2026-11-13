@@ -70,7 +70,7 @@ const generic = (c1, c2, c3) => [
   { id: 'decor', name: 'Decorar', stars: c3, choice: 'decor' },
 ];
 export const AREAS = [
-  { id: 'restaurante', name: 'Restaurante Maré Mansa', icon: '🍽️', type: 'building', pos: [5, 5], size: 1.25, lvl: 1, interior: true, steps: [
+  { id: 'restaurante', name: 'Restaurante Maré Mansa', icon: '🍽️', type: 'building', pos: [6.13, 2.74], size: 1.25, lvl: 1, interior: true, steps: [
     { id: 'limpar', name: 'Retirar o entulho', stars: 2, scene: 'r_limpar' },
     { id: 'piso', name: 'Trocar o piso', stars: 4, choice: 'piso', scene: 'r_piso' },
     { id: 'parede', name: 'Pintar as paredes', stars: 5, choice: 'parede', scene: 'r_parede' },
@@ -78,7 +78,7 @@ export const AREAS = [
     { id: 'decor', name: 'Decoração do salão', stars: 9, choice: 'decor', scene: 'r_decor' },
     { id: 'estilo', name: 'Fachada e letreiro', stars: 12, choice: 'estilo', scene: 'r_fachada' },
   ] },
-  { id: 'cafeteria', name: 'Cafeteria & Confeitaria', icon: '☕', type: 'building', pos: [2, 5], size: 0.95, lvl: 2, interior: true, steps: [
+  { id: 'cafeteria', name: 'Cafeteria & Confeitaria', icon: '☕', type: 'building', pos: [3.02, 5.85], size: 0.95, lvl: 2, interior: true, steps: [
     { id: 'limpar', name: 'Limpar o terreno', stars: 5, scene: 'caf_1' },
     { id: 'piso', name: 'Trocar o piso', stars: 6, choice: 'piso' },
     { id: 'parede', name: 'Pintar as paredes', stars: 6, choice: 'parede' },
@@ -86,17 +86,17 @@ export const AREAS = [
     { id: 'decor', name: 'Vitrine e decoração', stars: 8, choice: 'decor' },
     { id: 'estilo', name: 'Fachada e letreiro', stars: 10, choice: 'estilo', scene: 'caf_2' },
   ] },
-  { id: 'praca', name: 'Praça da Fonte', icon: '⛲', type: 'plaza', pos: [5, 2], size: 1.1, lvl: 3, steps: [
+  { id: 'praca', name: 'Praça da Fonte', icon: '⛲', type: 'plaza', pos: [1.45, 4.03], size: 1.1, lvl: 3, steps: [
     { id: 'limpar', name: 'Limpar o terreno', stars: 8, scene: 'praca_1' }, { id: 'estilo', name: 'Reformar', stars: 12, choice: 'estilo' }, { id: 'decor', name: 'Decorar', stars: 16, choice: 'decor' }] },
-  { id: 'casas', name: 'Casas dos Moradores', icon: '🏠', type: 'houses', pos: [2, 2], size: 1, lvl: 4, steps: generic(10, 15, 20) },
-  { id: 'praia', name: 'Praia do Sossego', icon: '🏖️', type: 'beach', pos: [8.6, 8.6], size: 1.3, lvl: 5, steps: [
+  { id: 'casas', name: 'Casas dos Moradores', icon: '🏠', type: 'houses', pos: [1.37, 7.5], size: 1, lvl: 4, steps: generic(10, 15, 20) },
+  { id: 'praia', name: 'Praia do Sossego', icon: '🏖️', type: 'beach', pos: [8.06, 10.81], size: 1.3, lvl: 5, steps: [
     { id: 'limpar', name: 'Limpar o terreno', stars: 12, scene: 'praia_1' }, { id: 'estilo', name: 'Reformar', stars: 18, choice: 'estilo' }, { id: 'decor', name: 'Decorar', stars: 24, choice: 'decor' }] },
-  { id: 'pier', name: 'Porto e Píer', icon: '⚓', type: 'pier', pos: [11.2, 6], size: 1, lvl: 6, steps: [
+  { id: 'pier', name: 'Porto e Píer', icon: '⚓', type: 'pier', pos: [13.23, 5.16], size: 1, lvl: 6, steps: [
     { id: 'limpar', name: 'Limpar o terreno', stars: 14, scene: 'pier_1' }, { id: 'estilo', name: 'Reformar', stars: 20, choice: 'estilo' }, { id: 'decor', name: 'Decorar', stars: 28, choice: 'decor' }] },
-  { id: 'mercado', name: 'Mercado e Lojas', icon: '🛒', type: 'building', pos: [8, 2], size: 1, lvl: 7, steps: generic(16, 24, 32) },
-  { id: 'pousada', name: 'Hotel Pousada', icon: '🏨', type: 'building', pos: [8, 5], size: 1.1, tall: true, lvl: 8, steps: generic(18, 28, 36) },
-  { id: 'parque', name: 'Parque das Mangueiras', icon: '🎠', type: 'park', pos: [2, 8], size: 1.1, lvl: 9, steps: generic(20, 30, 40) },
-  { id: 'salao', name: 'Salão de Festas', icon: '🎉', type: 'building', pos: [5, 8.3], size: 1, lvl: 10, steps: generic(24, 36, 48) },
+  { id: 'mercado', name: 'Mercado e Lojas', icon: '🛒', type: 'building', pos: [8.15, 0.89], size: 1, lvl: 7, steps: generic(16, 24, 32) },
+  { id: 'pousada', name: 'Hotel Pousada', icon: '🏨', type: 'building', pos: [9.6, 6.85], size: 1.1, tall: true, lvl: 8, steps: generic(18, 28, 36) },
+  { id: 'parque', name: 'Parque das Mangueiras', icon: '🎠', type: 'park', pos: [10.97, 4.84], size: 1.1, lvl: 9, steps: generic(20, 30, 40) },
+  { id: 'salao', name: 'Salão de Festas', icon: '🎉', type: 'building', pos: [4.76, 10.73], size: 1, lvl: 10, steps: generic(24, 36, 48) },
 ];
 
 // Álbum da Vila: 3 coleções de 6 cartas

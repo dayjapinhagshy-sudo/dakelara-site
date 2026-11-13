@@ -206,6 +206,13 @@ function drawArea(a, info, cx, cy, k = 1) {
   return DRAW[a.type](cx, cy, a.size * k, palette(info), info, { tall: a.tall });
 }
 
+// Calçadas de pedra desenhadas na imagem areas/vila-fundo.webp (coordenadas do mapa 1600×1000).
+// Se a imagem do fundo mudar, ajustar estas linhas e o "pos" das áreas em world.js.
+const FUNDO_PATHS = [
+  [[830, 165], [880, 235], [860, 300], [790, 370], [790, 420], [830, 470], [800, 540], [730, 610], [720, 690], [760, 720]],
+  [[220, 440], [400, 440], [560, 420], [700, 410], [790, 420], [900, 435], [1100, 435], [1300, 425], [1390, 430]],
+];
+
 /** Mapa da vila. infoOf(id) devolve o resultado de areaInfo. */
 export function villageSvg(infoOf, lvl) {
   const [W, H] = VILLAGE_SIZE;
@@ -234,6 +241,11 @@ export function villageSvg(infoOf, lvl) {
   const things = [], labels = [];
   // enfeite em imagem 3D (areas/enfeite-*.webp), com a base no ponto (x, y); null = usa o desenho
   const deco = (k, x, y, w) => { const img = sceneryArt(k); return img ? `<image href="${img}" x="${x - w / 2}" y="${y - w * 0.97}" width="${w}" height="${w}"/>` : null; };
+  // Enfeites não podem tampar construções (nem os nomes) nem ficar em cima das calçadas da imagem de fundo
+  const boxes = AREAS.map((a) => { const [cx, cy] = iso(a.pos[0], a.pos[1]), w = 172 * a.size; return [cx - w / 2, cy - w * 0.86, cx + w / 2, cy + 74 * a.size]; });
+  const near = (x, y, [ax, ay], [bx, by]) => { const dx = bx - ax, dy = by - ay, t = Math.max(0, Math.min(1, ((x - ax) * dx + (y - ay) * dy) / (dx * dx + dy * dy))); return Math.hypot(x - ax - t * dx, y - ay - t * dy); };
+  const free = (x, y, r) => !boxes.some(([x0, y0, x1, y1]) => x > x0 - r && x < x1 + r && y > y0 && y < y1 + r)
+    && !(fundo && FUNDO_PATHS.some((p) => p.slice(1).some((q, i) => near(x, y, p[i], q) < r)));
   // farol
   const [fx, fy] = iso(0.4, 10.9);
   const farol = deco('farol', fx, fy + 6, 130);
@@ -242,9 +254,9 @@ export function villageSvg(infoOf, lvl) {
   const TREES = [[0.5, 0.7, 'p'], [1.1, 4.7, 'pink'], [10.7, 0.9, 'p'], [4.5, 0.6, 'pink'], [0.6, 7.7, 'p'], [7.6, 0.6, 'green'], [10.9, 4.4, 'p'], [4.7, 10.8, 'p'], [7.1, 11.1, 'p'], [11.1, 7.7, 'p'],
     [3.1, 6.4, 'pink'], [9.9, 3.1, 'green'], [7.3, 4.1, 'pink'], [4.2, 4.3, 'green'], [0.5, 2.6, 'green'], [2.7, 0.5, 'pink'], [9.4, 0.6, 'pink'], [11.2, 2.6, 'green'], [0.6, 9.4, 'pink'], [6.2, 9.8, 'pink'],
     [9.6, 6.3, 'green'], [6.3, 6.1, 'pink'], [1.2, 10.3, 'p'], [10.4, 7.1, 'pink'], [4.2, 7.3, 'green'], [7.3, 7.6, 'pink'], [5.1, 3.9, 'pink'], [2.4, 3.1, 'green']];
-  for (const [x, y, t] of TREES) { const [px, py] = iso(x, y); things.push([x + y, (t === 'p' ? deco('palmeira', px, py, 100) || palm(px, py, 0.95) : deco(t === 'pink' ? 'arvore-rosa' : 'arvore-verde', px, py, 84) || tree(px, py, 0.85, t))]); }
-  for (const [x, y] of [[3.1, 4.2], [4.2, 3.1], [6.2, 3.1], [3.1, 7.3], [7.2, 6.2], [6.2, 7.3], [9.9, 4.2], [1.4, 6.2]]) { const [px, py] = iso(x, y); things.push([x + y - 0.2, deco('flores', px, py + 4, 46) || flowers(px, py, 7, 14)]); }
-  for (const [x, y] of [[3.9, 3.3], [6.4, 3.3], [3.3, 6.4], [6.9, 7.1], [9.1, 6.4]]) { const [px, py] = iso(x, y); things.push([x + y, deco('poste', px, py, 52) || `<rect x="${px - 1.5}" y="${py - 30}" width="3" height="30" fill="#4a5b78"/><circle class="tw" cx="${px}" cy="${py - 33}" r="5" fill="#ffe08a" stroke="#4a5b78" stroke-width="1.5"/>`]); }
+  for (const [x, y, t] of TREES) { const [px, py] = iso(x, y); if (!free(px, py, 34)) continue; things.push([x + y, (t === 'p' ? deco('palmeira', px, py, 100) || palm(px, py, 0.95) : deco(t === 'pink' ? 'arvore-rosa' : 'arvore-verde', px, py, 84) || tree(px, py, 0.85, t))]); }
+  for (const [x, y] of [[3.1, 4.2], [4.2, 3.1], [6.2, 3.1], [3.1, 7.3], [7.2, 6.2], [6.2, 7.3], [9.9, 4.2], [1.4, 6.2]]) { const [px, py] = iso(x, y); if (!free(px, py, 24)) continue; things.push([x + y - 0.2, deco('flores', px, py + 4, 46) || flowers(px, py, 7, 14)]); }
+  for (const [x, y] of [[3.9, 3.3], [6.4, 3.3], [3.3, 6.4], [6.9, 7.1], [9.1, 6.4]]) { const [px, py] = iso(x, y); if (!free(px, py, 14)) continue; things.push([x + y, deco('poste', px, py, 52) || `<rect x="${px - 1.5}" y="${py - 30}" width="3" height="30" fill="#4a5b78"/><circle class="tw" cx="${px}" cy="${py - 33}" r="5" fill="#ffe08a" stroke="#4a5b78" stroke-width="1.5"/>`]); }
   for (const a of AREAS) {
     const info = infoOf(a.id), [cx, cy] = iso(a.pos[0], a.pos[1]);
     const locked = !info.unlocked;

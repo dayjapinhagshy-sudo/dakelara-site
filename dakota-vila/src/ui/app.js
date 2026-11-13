@@ -244,7 +244,9 @@ function render() {
   const m2 = $('.map');
   if (m2) {
     if (keep.map) { m2.scrollLeft = keep.map[0]; m2.scrollTop = keep.map[1]; }
-    else { const [x, y] = iso(5, 5), f = 1240 / 1600; m2.scrollLeft = x * f - m2.clientWidth / 2; m2.scrollTop = y * f - m2.clientHeight / 2; }
+    else { // abre centralizado na próxima reforma (ou no restaurante)
+      const n = AREAS.map((a) => M.areaInfo(G.s, a.id)).find((x) => x.unlocked && x.next), a = n ? n.a : AREAS[0];
+      const [x, y0] = iso(a.pos[0], a.pos[1]), y = y0 - 60 * a.size, f = 1240 / 1600; m2.scrollLeft = x * f - m2.clientWidth / 2; m2.scrollTop = y * f - m2.clientHeight / 2; }
   }
   if (G.enter) { app.firstElementChild.classList.add('enter'); G.enter = false; }
   renderModal();
