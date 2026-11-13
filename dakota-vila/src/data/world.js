@@ -78,8 +78,14 @@ export const AREAS = [
     { id: 'decor', name: 'Decoração do salão', stars: 9, choice: 'decor', scene: 'r_decor' },
     { id: 'estilo', name: 'Fachada e letreiro', stars: 12, choice: 'estilo', scene: 'r_fachada' },
   ] },
-  { id: 'cafeteria', name: 'Cafeteria & Confeitaria', icon: '☕', type: 'building', pos: [2, 5], size: 0.95, lvl: 2, steps: [
-    { id: 'limpar', name: 'Limpar o terreno', stars: 6, scene: 'caf_1' }, { id: 'estilo', name: 'Reformar', stars: 10, choice: 'estilo', scene: 'caf_2' }, { id: 'decor', name: 'Decorar', stars: 14, choice: 'decor' }] },
+  { id: 'cafeteria', name: 'Cafeteria & Confeitaria', icon: '☕', type: 'building', pos: [2, 5], size: 0.95, lvl: 2, interior: true, steps: [
+    { id: 'limpar', name: 'Limpar o terreno', stars: 5, scene: 'caf_1' },
+    { id: 'piso', name: 'Trocar o piso', stars: 6, choice: 'piso' },
+    { id: 'parede', name: 'Pintar as paredes', stars: 6, choice: 'parede' },
+    { id: 'moveis', name: 'Balcão e mesinhas', stars: 7, choice: 'moveis' },
+    { id: 'decor', name: 'Vitrine e decoração', stars: 8, choice: 'decor' },
+    { id: 'estilo', name: 'Fachada e letreiro', stars: 10, choice: 'estilo', scene: 'caf_2' },
+  ] },
   { id: 'praca', name: 'Praça da Fonte', icon: '⛲', type: 'plaza', pos: [5, 2], size: 1.1, lvl: 3, steps: [
     { id: 'limpar', name: 'Limpar o terreno', stars: 8, scene: 'praca_1' }, { id: 'estilo', name: 'Reformar', stars: 12, choice: 'estilo' }, { id: 'decor', name: 'Decorar', stars: 16, choice: 'decor' }] },
   { id: 'casas', name: 'Casas dos Moradores', icon: '🏠', type: 'houses', pos: [2, 2], size: 1, lvl: 4, steps: generic(10, 15, 20) },

@@ -296,6 +296,11 @@ export function interiorSvg(info) {
   // balcão
   const bc = furn ? furn.furn : ab ? '#756c66' : '#a89277';
   s += `<rect x="250" y="112" width="100" height="52" rx="6" fill="${bc}"/><rect x="246" y="106" width="108" height="10" rx="5" fill="${furn ? furn.cloth : shade(bc, 0.3)}"/>`;
+  // cafeteria: vitrine de doces sobre o balcão (desenho provisório até chegar a imagem 3D)
+  if (info.a && info.a.id === 'cafeteria' && furn) {
+    s += `<rect x="256" y="72" width="88" height="36" rx="6" fill="#dff6ff" opacity=".75" stroke="${furn.furn}" stroke-width="3"/><path d="M258 90 H342" stroke="${furn.furn}" stroke-width="2"/>`;
+    for (const [x, y, c] of [[270, 86, '#ff9fbf'], [292, 86, '#ffd36b'], [314, 86, '#c98a5a'], [281, 104, '#ffb3d1'], [303, 104, '#fff1c9'], [325, 104, '#ff7f9f']]) s += `<path d="M${x - 7} ${y} l2 -7 h10 l2 7Z" fill="${shade(c, -0.25)}"/><circle cx="${x}" cy="${y - 9}" r="6" fill="${c}"/><circle cx="${x}" cy="${y - 15}" r="2" fill="#e8344f"/>`;
+  }
   if (ab) s += `<path d="M30 236 l20 -30 l26 12 l18 -22 l22 40Z" fill="#6f6662"/><path d="M200 240 l14 -20 l24 6 l10 14Z" fill="#7d746e"/><path d="M60 200 l40 -8 M210 190 l30 12" stroke="#7a5a3a" stroke-width="6" stroke-linecap="round"/>` + weeds(120, 244, 4, 60);
   if (furn) for (const [x, y, k] of [[70, 196, 1], [180, 214, 1.12], [118, 168, 0.85]]) {
     const round = choices.moveis !== 'moderno';

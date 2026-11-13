@@ -576,3 +576,23 @@ test('arte em imagem: manifesto substitui item, retrato e área; o resto continu
   A.setManifest(null);
   assert.ok(P.portrait('matilde', 'rindo').startsWith('<svg'));
 });
+
+test('cafeteria com interior: 6 etapas e saves antigos (3 etapas) convertidos sem perda', () => {
+  const caf = AREAS.find((a) => a.id === 'cafeteria');
+  assert.ok(caf.interior);
+  assert.deepEqual(caf.steps.map((x) => x.id), ['limpar', 'piso', 'parede', 'moveis', 'decor', 'estilo']);
+  // save antigo que já terminou a cafeteria: continua terminada
+  const a = fresh(); a.village.cafeteria = { step: 3, choices: { estilo: 'tropical', decor: 'rustico' } };
+  const a2 = S.deserialize(S.serialize(a), T0);
+  assert.equal(a2.village.cafeteria.step, 6);
+  assert.equal(a2.village.cafeteria.choices.piso, 'rustico');
+  assert.equal(a2.village.cafeteria.choices.estilo, 'tropical');
+  // save antigo só com a fachada: volta para "limpo" e recebe as 10 estrelas de volta
+  const b = fresh(); b.village.cafeteria = { step: 2, choices: { estilo: 'moderno' } }; const stars = b.wallet.stars;
+  const b2 = S.deserialize(S.serialize(b), T0);
+  assert.equal(b2.village.cafeteria.step, 1);
+  assert.equal(b2.wallet.stars, stars + 10);
+  // save novo não é mexido
+  const c = fresh(); c.village.cafeteria = { step: 2, choices: { piso: 'moderno' } };
+  assert.equal(S.deserialize(S.serialize(c), T0).village.cafeteria.step, 2);
+});
