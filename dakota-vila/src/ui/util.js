@@ -1,5 +1,9 @@
 // Utilidades de interface.
 import { itemDef } from '../data/items.js';
+import { itemArt } from './assets.js';
+
+/** Conteúdo visual de um item: imagem do manifesto ou emoji. */
+export const itemFace = (id) => { const src = itemArt(id), d = itemDef(id); return src ? `<img class="art" src="${src}" alt="" draggable="false">` : `<span class="em">${d.icon}</span>`; };
 
 export const $ = (q, el = document) => el.querySelector(q);
 export const $$ = (q, el = document) => [...el.querySelectorAll(q)];
@@ -20,7 +24,7 @@ export const timer = (ts, now) => `<span data-t="${ts}">${fmt(ts - now)}</span>`
 /** Ícone de item em miniatura (com moldura de raridade). */
 export function ico(id, { known = true, n = 0, check = false } = {}) {
   const d = itemDef(id);
-  return `<span class="it mini r${d.rarity} ${d.kind === 'gen' ? 'gen' : ''} ${known ? '' : 'unknown'}" title="${known ? esc(d.name) : '???'}"><span class="em">${d.icon}</span>${n > 1 ? `<b class="cnt">×${n}</b>` : ''}${check ? '<b class="ok">✓</b>' : ''}</span>`;
+  return `<span class="it mini r${d.rarity} ${d.kind === 'gen' ? 'gen' : ''} ${known ? '' : 'unknown'}" title="${known ? esc(d.name) : '???'}">${itemFace(id)}${n > 1 ? `<b class="cnt">×${n}</b>` : ''}${check ? '<b class="ok">✓</b>' : ''}</span>`;
 }
 export const bar = (v, max, label = '') => `<div class="pbar"><i style="width:${Math.min(100, (v / max) * 100)}%"></i><span>${label || `${v}/${max}`}</span></div>`;
 export const priceText = (p) => Object.entries(p).map(([k, v]) => `${{ coins: '🪙', gems: '💎', comps: '🧩', stars: '⭐' }[k]} ${v}`).join(' ');

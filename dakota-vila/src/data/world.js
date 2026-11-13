@@ -2,8 +2,8 @@
 
 export const CHARACTERS = {
   dakota: { name: 'Dakota', role: 'Você', bio: 'Voltou para a vila onde cresceu para reerguer o restaurante da avó.', look: { skin: '#f7cdb0', hair: '#ff5fa2', style: 'long', cloth: '#ff8fb8', acc: ['flower', 'earring', 'shades'] } },
-  matilde: { name: 'Dona Matilde', role: 'Avó · 89 anos', bio: 'Fundadora do restaurante Maré Mansa. Guarda receitas — e segredos.', look: { skin: '#f3c6a5', hair: '#e9e6ee', style: 'bun', cloth: '#9b6bd6', acc: ['glasses', 'flower'] } },
-  juninho: { name: 'Juninho', role: 'Primo · 12 anos', bio: 'Inventor mirim, vive de fone no ouvido e conserta tudo na oficina.', look: { skin: '#e8b48c', hair: '#5a3620', style: 'curly', cloth: '#5fae5a', acc: ['headphones'] } },
+  matilde: { name: 'Dona Matilde', role: 'Avó · 89 anos', bio: 'Fundadora do restaurante Maré Mansa. Guarda receitas — e segredos.', look: { skin: '#f3c6a5', hair: '#e9e6ee', style: 'bun', cloth: '#7a4fb0', acc: ['glasses', 'flower'] } },
+  juninho: { name: 'Juninho', role: 'Primo · 12 anos', bio: 'Inventor mirim, vive de fone no ouvido e conserta tudo na oficina.', look: { skin: '#e8b48c', hair: '#5a3620', style: 'curly', cloth: '#4fb05a', acc: ['headphones'] } },
   sol: { name: 'Sol', role: 'Amigo de infância', bio: 'Músico e barista. Toca violão no píer ao pôr do sol.', look: { skin: '#d9a273', hair: '#2a2230', style: 'short', cloth: '#f5f1e8', acc: ['stubble'] }, romance: true },
   luna: { name: 'Luna', role: 'Melhor amiga', bio: 'Florista da praça, sabe de todas as novidades da vila.', look: { skin: '#f0c4a4', hair: '#231a2a', style: 'straight', cloth: '#f7a6c8', acc: ['earring'] } },
   rafael: { name: 'Rafael', role: 'Chef', bio: 'Chef viajante que parou na vila "por uma semana". Já faz um ano.', look: { skin: '#e0ad82', hair: '#4a2c1a', style: 'short', cloth: '#ffffff', acc: ['beard'] }, romance: true },

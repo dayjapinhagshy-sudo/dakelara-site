@@ -10,7 +10,8 @@ import * as Save from '../engine/save.js';
 import { portrait, villageSvg, sceneBg, titleArt, iso } from './art.js';
 import { sfx, setAudio, unlockAudio } from './audio.js';
 import { PANELS } from './panels.js';
-import { $, $$, esc, fmt, timer, ico, bar } from './util.js';
+import { $, $$, esc, fmt, timer, ico, bar, itemFace } from './util.js';
+import { loadManifest } from './assets.js';
 
 const G = { s: null, scene: 'menu', bk: 'main', sel: -1, modal: null, dlg: null, drag: null, isNew: false, started: false, popups: [], dirty: false, enter: false };
 window.__dakota = G; // para depuração e testes de interface
@@ -130,7 +131,7 @@ function cellHtml(it, i, wanted, t) {
   if (wanted[it.id] && B.isFree(it)) extra += '<b class="ok">✓</b>';
   if (it.left != null) extra += `<b class="chg">${it.left}</b>`;
   if (G.sel === i) cls += ' sel';
-  return `<div class="cell" data-i="${i}"><div class="${cls}"><span class="em">${d.icon}</span>${extra}</div></div>`;
+  return `<div class="cell" data-i="${i}"><div class="${cls}">${itemFace(it.id)}${extra}</div></div>`;
 }
 
 function orderCard(o, have, t) {
@@ -229,7 +230,7 @@ function render() {
   const m2 = $('.map');
   if (m2) {
     if (keep.map) { m2.scrollLeft = keep.map[0]; m2.scrollTop = keep.map[1]; }
-    else { const [x, y] = iso(5, 5); m2.scrollLeft = x - m2.clientWidth / 2; m2.scrollTop = y - m2.clientHeight / 2; }
+    else { const [x, y] = iso(5, 5), f = 1240 / 1600; m2.scrollLeft = x * f - m2.clientWidth / 2; m2.scrollTop = y * f - m2.clientHeight / 2; }
   }
   if (G.enter) { app.firstElementChild.classList.add('enter'); G.enter = false; }
   renderModal();
@@ -270,9 +271,15 @@ function renderDialog() {
     const done = d.replay ? null : G.s.story.choices[`${d.id}:${d.i}`];
     box = `<b class="dlg-name">${esc(p.name)}</b><div class="dlg-opts">${line.escolha.map((o, k) => `<button class="btn ${done === k ? 'go' : ''}" data-act="dchoice" data-o="${k}">${o.t}</button>`).join('')}</div>`;
   }
+  // quem ouve: o último outro personagem que falou (ou o próximo), para a cena ter dois rostos
+  const speakers = sc.lines.map((l) => (Array.isArray(l) ? l[0] : 'dakota'));
+  let other = null;
+  for (let k = d.i - 1; k >= 0 && !other; k--) if (speakers[k] !== who) other = speakers[k];
+  for (let k = d.i + 1; k < speakers.length && !other; k++) if (speakers[k] !== who) other = speakers[k];
+  const otherLeft = who === 'dakota';
   el.innerHTML = `<div class="dlg" data-act="dnext"><div class="dlg-bg">${sceneBg(sc.bg)}</div>
     <div class="dlg-top"><span>Capítulo ${ch.id} · ${sc.title}</span><button class="btn sm" data-act="dskip">Pular ⏭</button></div>
-    <div class="dlg-char" data-k="${d.i}${d.resp ? 'r' : ''}">${portrait(who, expr, p)}</div><div class="dlg-box">${box}</div></div>`;
+    <div class="dlg-cast ${other ? 'duo' : ''} ${otherLeft ? 'flip' : ''}">${other ? `<div class="dlg-char listener">${portrait(other, 'neutro', p)}</div>` : ''}<div class="dlg-char" data-k="${d.i}${d.resp ? 'r' : ''}">${portrait(who, expr, p)}</div></div><div class="dlg-box">${box}</div></div>`;
 }
 function endDialog() {
   const d = G.dlg;
@@ -484,7 +491,8 @@ function loop() {
   if ((changed || expired) && !G.drag) { if (changed) G.dirty = true; render(); }
 }
 
-function boot() {
+async function boot() {
+  await loadManifest();
   try { G.s = Save.load(localStorage, now()); } catch (e) { console.error('[boot] falha ao carregar', e); }
   if (!G.s) { G.s = newGame(now()); G.isNew = true; }
   setAudio(G.s.settings);

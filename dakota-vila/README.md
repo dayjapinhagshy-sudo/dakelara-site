@@ -13,6 +13,16 @@ npm start          # abre em http://localhost:8080
 Também funciona em qualquer hospedagem estática (por exemplo GitHub Pages: `…/dakota-vila/`).
 Precisa de Node 18+ apenas para o servidor local e para os testes.
 
+## Arte em imagem (renders 3D)
+
+Toda a arte vem pronta, gerada por código (SVG e emojis), mas qualquer imagem pode ser trocada por um PNG:
+
+1. `npm run assets:lista` gera `assets/LISTA.md` com o nome de arquivo e um prompt de estilo 3D cartoon para cada personagem, área da vila e item.
+2. Gere as imagens na ferramenta que preferir e salve em `assets/characters/`, `assets/areas/` ou `assets/items/` com o nome indicado (ex.: `dakota.png`, `matilde-rindo.png`, `restaurante-decorado.png`, `cafe-3.png`, `gen-cafe.png`).
+3. `npm run assets` monta `assets/manifest.json`. O jogo usa a imagem onde ela existir e a arte gerada no resto.
+
+Se a protagonista for personalizada (cabelo ou pele diferentes do padrão), o retrato gerado por código continua sendo usado para refletir a personalização.
+
 ## Testes
 
 ```bash
@@ -53,7 +63,7 @@ não exigem mudanças na lógica. Os testes de integridade (`dados: …`) acusam
 - **Pedidos**: 24 escritos à mão + geração contínua; normais, VIP, com prazo, do dia e da semana; bônus de sequência; afinidade com clientes.
 - **Vila isométrica** com 10 áreas (restaurante, cafeteria, praça, casas, praia, píer, mercado, pousada, parque, salão) em 4 estados
   (abandonado → limpo → reformado → decorado), 3 estilos por etapa, visão ampliada, troca de estilo salva. O restaurante tem interior com 6 etapas.
-- **História**: 9 personagens, 14 cenas em 3 capítulos, expressões, escolhas que afetam afinidade, histórico para rever; protagonista personalizável.
+- **História**: 9 personagens (retratos com 6 expressões), 14 cenas com dois personagens em cena em 3 capítulos, expressões, escolhas que afetam afinidade, histórico para rever; protagonista personalizável.
 - **Eventos**: login de 7 dias, missões diárias e semanais, festival semanal rotativo com passe gratuito e tabuleiro próprio (fichas em vez de energia),
   caça ao tesouro (pás), Álbum da Vila, calendário.
 - **Economia**: energia com regeneração (inclusive offline), moedas, gemas, estrelas, XP/níveis, loja, 14 conquistas. Gratuito, sem anúncios nem compras.
@@ -61,8 +71,8 @@ não exigem mudanças na lógica. Os testes de integridade (`dados: …`) acusam
 
 ## Limitações conhecidas (ainda não implementado)
 
-- **Arte dos itens**: os ícones dos itens usam os emojis coloridos do sistema dentro de molduras próprias — são um substituto provisório,
-  não a arte 3D cartoon final. Retratos, vila e interiores são SVG original gerado por código, em estilo flat (não 3D).
+- **Arte 3D**: ainda não há imagens renderizadas. Itens usam emojis do sistema em molduras próprias; retratos, vila e interiores
+  são SVG original com degradês e sombras (aparência semi-3D). A troca por renders 3D já está pronta (ver "Arte em imagem").
 - **Reformas com interior** só no restaurante; as outras 9 áreas têm exterior com 3 etapas.
 - **História** vai até o início do capítulo 3; mercado, pousada, parque, salão e casas ainda não têm cenas próprias. Romance existe só como afinidade e escolhas de diálogo.
 - **Placar do festival** é simulado no aparelho (não há servidor nem ranking on-line).

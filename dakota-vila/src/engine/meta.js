@@ -66,8 +66,8 @@ export function choose(s, sceneId, lineIdx, opt) {
 }
 export function setPlayer(s, { name, hair, skin }) {
   if (typeof name === 'string' && name.trim()) s.player.name = name.trim().slice(0, 14);
-  if (hair) s.player.hair = hair;
-  if (skin) s.player.skin = skin;
+  if (hair) { s.player.hair = hair; s.player.custom = hair !== "#ff5fa2" || s.player.skin !== "#f7cdb0"; }
+  if (skin) { s.player.skin = skin; s.player.custom = s.player.hair !== "#ff5fa2" || skin !== "#f7cdb0"; }
 }
 
 // ---- Oficina Dakota ----

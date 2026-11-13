@@ -559,3 +559,20 @@ test('simulação: 3000 ações aleatórias mantêm o estado consistente', () =>
   S.deserialize(S.serialize(s), now);
   setRng(null);
 });
+
+test('arte em imagem: manifesto substitui item, retrato e área; o resto continua gerado', async () => {
+  const A = await import('../src/ui/assets.js');
+  A.setManifest({ items: { 'cafe:1': 'items/cafe-1.png' }, portraits: { matilde: 'characters/matilde.png', 'matilde:rindo': 'characters/matilde-rindo.png' }, areas: { 'restaurante:decorado': 'areas/restaurante-decorado.png' } });
+  assert.equal(A.itemArt('cafe:1'), 'assets/items/cafe-1.png');
+  assert.equal(A.itemArt('cafe:2'), null);
+  assert.equal(A.portraitArt('matilde', 'rindo'), 'assets/characters/matilde-rindo.png');
+  assert.equal(A.portraitArt('matilde', 'triste'), 'assets/characters/matilde.png');
+  assert.equal(A.portraitArt('sol', 'feliz'), null);
+  assert.equal(A.areaArt('restaurante', 'decorado'), 'assets/areas/restaurante-decorado.png');
+  assert.equal(A.areaArt('restaurante', 'limpo'), null);
+  const P = await import('../src/ui/portraits.js');
+  assert.ok(P.portrait('matilde', 'rindo').startsWith('<img'));
+  assert.ok(P.portrait('sol', 'feliz').startsWith('<svg'));
+  A.setManifest(null);
+  assert.ok(P.portrait('matilde', 'rindo').startsWith('<svg'));
+});
