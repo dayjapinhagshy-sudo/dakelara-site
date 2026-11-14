@@ -98,7 +98,7 @@ Convenções:
 
 ## 5. O que falta / próximos passos (em ordem sugerida)
 
-1. **Interior da cafeteria** (e depois de outras áreas). No código: `interior: true` + etapas de dentro (`piso`, `parede`, `moveis`, `decor`) em `AREAS` (world.js); `interiorKey`/`interiorSvg` em art.js já funcionam para qualquer área com imagens `areas/<id>-dentro-*.webp`. Hoje só o restaurante tem SVG de interior; para outra área sem imagem, criar um fallback. Pedidos para a IA no formato do restaurante (seção 6).
+1. ~~Interior da cafeteria~~ **feito em 13/11** (3 estilos em 3D). Próximo: interior de outras áreas. No código: `interior: true` + etapas de dentro (`piso`, `parede`, `moveis`, `decor`) em `AREAS` (world.js); `interiorKey`/`interiorSvg` em art.js já funcionam para qualquer área com imagens `areas/<id>-dentro-*.webp`. Hoje só o restaurante tem SVG de interior; para outra área sem imagem, criar um fallback. Pedidos para a IA no formato do restaurante (seção 6).
 2. **História:** completar o capítulo 3 (farol, Aurora/"A.") e cenas para mercado, pousada, parque, salão e casas; **cenas com a Evie** (ela ainda não aparece em nenhuma cena); desfechos de romance (Sol/Rafael têm `romance: true`).
 3. **Eventos** sazonais e de decoração com conteúdo próprio (hoje o festival só troca nome/ícone).
 4. **Modo offline** (service worker) e empacotamento **Android/Windows** (Capacitor / Tauri).
@@ -116,7 +116,7 @@ Convenções:
 
 Ela salva as imagens com qualquer nome na pasta `D:\DAKELARA VILA DAKOTA\dakota vila png` (ou solta em `D:\DAKELARA VILA DAKOTA`) e avisa. O fluxo é:
 
-1. Copiar as imagens novas para `dakota-vila/assets/originais/_entrada/NN.png` (numeração seguida; o próximo número é **78**) e anotar a origem em `assets/originais/_entrada-mapa.txt`.
+1. Copiar as imagens novas para `dakota-vila/assets/originais/_entrada/NN.png` (numeração seguida; o próximo número é **80**) e anotar a origem em `assets/originais/_entrada-mapa.txt`.
 2. Ver as imagens (o jeito mais rápido é uma folha de miniaturas no navegador) e identificar cada objeto.
 3. Descrever cada folha em `assets/originais/_folhas.json`:
    - `{"modo": "grade", "cols": 3, "rows": 2, "nomes": [...]}`: corta em grade (personagens 3×2, prédios 2×2). `"limpar": true` descarta lascas do vizinho.
