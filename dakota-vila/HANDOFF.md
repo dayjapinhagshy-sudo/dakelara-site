@@ -93,7 +93,7 @@ Convenções:
 - Vila isométrica: 10 áreas em 4 estados, 3 estilos por etapa; restaurante com interior em 6 etapas.
 - **Fiel ao mockup:** menu com a Dakota apoiada na mão + cappuccino; barra lateral no tabuleiro (mochila (aceita arrastar item), entrada, missões, próxima reforma, loja); reforma com **Antes → Depois** e "Escolha um estilo"; cartões ilustrados em Eventos (Festival com balão, Álbum com %, Oficina, Missões, Tesouro).
 - **Arte 3D completa** (WebP transparente): retratos 512 px, itens 256 px, áreas 768 px, interior 768×512, `dakota-menu` 1024×1536. Total ~10 MB.
-- Personagens: Dakota (protagonista), Dona Matilde (avó da Dakota), **Juninho (filho da Dakota, como o filho da autora; a Matilde é a bisa dele)**, Sol, Luna (melhor amiga), **Evie (amiga, fotógrafa e surfista, ruiva; criada a pedido da autora)**, Rafael, Vera, Teco, visitante misterioso.
+- Personagens: Dakota (protagonista), Dona Matilde (avó da Dakota), **Juninho (filho da Dakota, a pedido da autora; a Matilde é a bisa dele)**, Sol, Luna (melhor amiga), **Evie (amiga, fotógrafa e surfista, ruiva; criada a pedido da autora)**, Rafael, Vera, Teco, visitante misterioso.
 - História: 14 cenas em 3 capítulos, escolhas, histórico; protagonista personalizável (se personalizada, usa o retrato SVG).
 - Eventos: login de 7 dias, missões, festival semanal com tabuleiro próprio, caça ao tesouro, Álbum, conquistas.
 - Salvamento automático + exportar/importar save. Layout verificado em 320×568, 375×812 e 1280×800.
