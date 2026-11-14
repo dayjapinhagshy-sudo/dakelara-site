@@ -3,7 +3,7 @@
 export const CHARACTERS = {
   dakota: { name: 'Dakota', role: 'Você', bio: 'Voltou para a vila onde cresceu para reerguer o restaurante da avó.', look: { skin: '#f7cdb0', hair: '#ff5fa2', style: 'long', cloth: '#ff8fb8', acc: ['flower', 'earring', 'shades'] } },
   matilde: { name: 'Dona Matilde', role: 'Avó · 89 anos', bio: 'Fundadora do restaurante Maré Mansa. Guarda receitas — e segredos.', look: { skin: '#f3c6a5', hair: '#e9e6ee', style: 'bun', cloth: '#7a4fb0', acc: ['glasses', 'flower'] } },
-  juninho: { name: 'Juninho', role: 'Primo · 12 anos', bio: 'Inventor mirim, vive de fone no ouvido e conserta tudo na oficina.', look: { skin: '#e8b48c', hair: '#5a3620', style: 'curly', cloth: '#4fb05a', acc: ['headphones'] } },
+  juninho: { name: 'Juninho', role: 'Filho da Dakota · 12 anos', bio: 'Inventor mirim, vive de fone no ouvido e conserta tudo na oficina.', look: { skin: '#e8b48c', hair: '#5a3620', style: 'curly', cloth: '#4fb05a', acc: ['headphones'] } },
   sol: { name: 'Sol', role: 'Amigo de infância', bio: 'Músico e barista. Toca violão no píer ao pôr do sol.', look: { skin: '#d9a273', hair: '#2a2230', style: 'short', cloth: '#f5f1e8', acc: ['stubble'] }, romance: true },
   luna: { name: 'Luna', role: 'Melhor amiga', bio: 'Florista da praça, sabe de todas as novidades da vila.', look: { skin: '#f0c4a4', hair: '#231a2a', style: 'straight', cloth: '#f7a6c8', acc: ['earring'] } },
   evie: { name: 'Evie', role: 'Amiga', bio: 'Fotógrafa e surfista, chegou de mochila para fotografar o farol e acabou ficando. Topa qualquer aventura.', look: { skin: '#f6d2bc', hair: '#c8552e', style: 'wavy', cloth: '#ffd25e', acc: ['freckles', 'earring'] } },
@@ -48,7 +48,7 @@ export const ORDERS = [
 // Falas para pedidos gerados
 export const ORDER_LINES = {
   matilde: ['Tem um agrado para a vovó?', 'Isso me lembra a cozinha antiga.', 'Capricha, minha menina.'],
-  juninho: ['Preciso disso pra uma invenção!', 'Rápido, o Teco tá esperando!', 'Valeu, prima!'],
+  juninho: ['Preciso disso pra uma invenção!', 'Rápido, o Teco tá esperando!', 'Valeu, mãe!'],
   sol: ['Combina com o som de hoje.', 'Pra viagem, vou tocar no píer.', 'Você sempre acerta.'],
   luna: ['A vila inteira está comentando disso!', 'Preciso para a floricultura.', 'Depois te conto uma novidade…'],
   evie: ['Isso vai render uma foto linda!', 'Pra levar no piquenique da praia.', 'Você é demais, amiga!'],
@@ -124,10 +124,12 @@ export const SCENES = {
       { t: 'Vamos! Mãos à obra.', rel: { matilde: 1 }, resp: ['matilde', 'rindo', 'Essa é a minha neta!'] },
       { t: 'Antes, um café. Depois, o mundo.', rel: { matilde: 1 }, resp: ['matilde', 'rindo', 'Puxou a mim. A cafeteira ainda funciona!'] },
     ] },
+    ['juninho', 'feliz', 'Bisa! Eu também vim! A mãe disse que aqui tem uma oficina velha só esperando por mim.'],
+    ['matilde', 'rindo', 'Meu bisneto inventor! Com vocês dois aqui, essa vila vai voltar a ter vida.'],
   ] },
   r_limpar: { cap: 1, title: 'Poeira e lembranças', bg: 'interior', lines: [
     ['dakota', 'neutro', 'Ufa. Dez sacos de entulho depois… dá pra ver o chão de novo.'],
-    ['juninho', 'feliz', 'Prima! Achei isso atrás do balcão: uma caixa de lata toda enferrujada.'],
+    ['juninho', 'feliz', 'Mãe! Achei isso atrás do balcão: uma caixa de lata toda enferrujada.'],
     ['dakota', 'surpreso', 'Tem um caderno de receitas dentro… e faltam várias páginas.'],
     ['matilde', 'surpreso', 'Meu caderno! Achei que a tempestade tinha levado. As páginas… alguém arrancou.'],
     ['juninho', 'neutro', 'Mistério! Eu investigo. Digo, depois do lanche.'],
@@ -202,8 +204,8 @@ export const SCENES = {
     ['dakota', 'surpreso', 'Uma chave… com um farol gravado.'],
   ] },
   lvl3: { cap: 1, title: 'A oficina do Juninho', bg: 'vila', lines: [
-    ['juninho', 'feliz', 'Prima! Montei a Oficina Dakota. Me traz peças 🧩 que eu deixo seus geradores turbinados!'],
-    ['dakota', 'feliz', 'Você é um gênio, Juninho.'],
+    ['juninho', 'feliz', 'Mãe! Montei a Oficina Dakota. Me traz peças 🧩 que eu deixo seus geradores turbinados!'],
+    ['dakota', 'feliz', 'Você é um gênio, filho.'],
     ['juninho', 'rindo', 'Eu sei. Ah, e plantei um pomar pra você. Ele dá fruta sozinho!'],
   ] },
   lvl5: { cap: 2, title: 'Jantar de negócios', bg: 'interior', lines: [
