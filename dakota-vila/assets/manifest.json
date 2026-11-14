@@ -302,6 +302,11 @@
     "flores": "areas/enfeite-flores.webp",
     "palmeira": "areas/enfeite-palmeira.webp",
     "poste": "areas/enfeite-poste.webp",
+    "fundo-conversa-dentro": "areas/fundo-conversa-dentro.webp",
+    "fundo-conversa": "areas/fundo-conversa.webp",
+    "fundo-menu": "areas/fundo-menu.webp",
+    "fundo-tabuleiro": "areas/fundo-tabuleiro.webp",
+    "mesa-menu": "areas/mesa-menu.webp",
     "fundo": "areas/vila-fundo.webp"
   }
 }

@@ -83,7 +83,7 @@ function bbox(cv) {
 }
 
 // Enquadra no tamanho final: retratos e vila com a base no rodapé, itens centralizados
-const FRAME = { portrait: [512, 512, 0.04, 'bottom'], pose: [1024, 1536, 0.03, 'bottom'], item: [256, 256, 0.06, 'center'], area: [768, 768, 0.03, 'bottom'], interior: [768, 512, 0.02, 'center'], enfeite: [384, 384, 0.03, 'bottom'], mesa: [1024, 384, 0.01, 'top'] };
+const FRAME = { portrait: [512, 512, 0.04, 'bottom'], pose: [1024, 1536, 0.03, 'bottom'], item: [256, 256, 0.06, 'center'], area: [768, 768, 0.03, 'bottom'], interior: [768, 512, 0.02, 'center'], enfeite: [384, 384, 0.03, 'bottom'], mesa: [1024, 600, 0.01, 'top'] };
 function frame(cv, kind) {
   if (kind === 'tela') { // fundo de tela de celular: 900×1600, preenche tudo (corta as sobras, sem deformar)
     const out = canvasOf(900, 1600), s = Math.max(900 / cv.width, 1600 / cv.height), w = cv.width * s, h = cv.height * s;
