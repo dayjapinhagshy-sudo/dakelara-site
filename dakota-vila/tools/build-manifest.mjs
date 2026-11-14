@@ -24,11 +24,14 @@ for (const f of list('characters')) {
   out.portraits[expr ? `${who}:${expr}` : who] = 'characters/' + f;
 }
 const SCENERY = ['palmeira', 'arvore-rosa', 'arvore-verde', 'flores', 'poste', 'farol'];
+const TELAS = ['fundo-menu', 'fundo-conversa', 'fundo-conversa-dentro', 'fundo-tabuleiro', 'mesa-menu'];
 out.scenery = {};
 for (const f of list('areas')) {
   // paisagem da vila: vila-fundo (ilha + mar) e enfeite-palmeira, enfeite-flores …
   const base = f.replace(/\.\w+$/, '');
   if (base === 'vila-fundo') { out.scenery.fundo = 'areas/' + f; continue; }
+  // fundos de tela (menu, conversas, tabuleiro) e a mesa da tela inicial
+  if (TELAS.includes(base)) { out.scenery[base] = 'areas/' + f; continue; }
   if (base.startsWith('enfeite-')) { const k = base.slice(8); if (SCENERY.includes(k)) out.scenery[k] = 'areas/' + f; else warn.push(`areas/${f}: enfeite desconhecido`); continue; }
   // interiores: restaurante-dentro-0 | -dentro-1 | -dentro-piso-rustico …
   const inside = f.replace(/\.\w+$/, '').match(/^([a-z]+)-dentro-(0|1|(?:piso|parede|moveis|decor)-(?:rustico|tropical|moderno))$/);

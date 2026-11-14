@@ -11,7 +11,7 @@ import { portrait, villageSvg, sceneBg, titleArt, iso } from './art.js';
 import { sfx, setAudio, unlockAudio } from './audio.js';
 import { PANELS } from './panels.js';
 import { $, $$, esc, fmt, timer, ico, bar, itemFace } from './util.js';
-import { loadManifest } from './assets.js';
+import { loadManifest, sceneryArt } from './assets.js';
 
 const G = { s: null, scene: 'menu', bk: 'main', sel: -1, modal: null, dlg: null, drag: null, isNew: false, started: false, popups: [], dirty: false, enter: false };
 window.__dakota = G; // para depuração e testes de interface
@@ -214,7 +214,8 @@ function boardScene() {
     <button data-act="modal" data-name="eventos"><span>🎪</span>Eventos${M.pendingClaims(s, t) ? `<b class="dot">${M.pendingClaims(s, t)}</b>` : ''}</button>
     <button data-act="undo" ${s.undo ? '' : 'disabled'}><span>↩️</span>Desfazer</button>`;
   const navEv = `<button data-act="go" data-scene="board" data-bk="main"><span>⬅️</span>Tabuleiro</button><button data-act="modal" data-name="eventos" data-tab="fest"><span>🎁</span>Prêmios</button><button data-act="undo" ${s.undo ? '' : 'disabled'}><span>↩️</span>Desfazer</button>`;
-  return `<div class="scene board ${ev ? 'event' : ''}">${hud()}${top}
+  const fundo = sceneryArt('fundo-tabuleiro'); // fundo 3D do tabuleiro (areas/fundo-tabuleiro.webp)
+  return `<div class="scene board ${ev ? 'event' : ''}${fundo ? ' com-fundo' : ''}"${fundo ? ` style="background-image:url('${fundo}')"` : ''}>${hud()}${top}
     <div class="board-mid">${ev ? '' : sideRail(t)}<div class="grid-wrap"><div class="grid" style="--w:${b.w};--h:${b.h}">${b.cells.map((it, i) => cellHtml(it, i, wanted, t)).join('')}</div></div></div>
     ${infoPanel(t)}<nav class="bar">${ev ? navEv : navMain}</nav></div>`;
 }

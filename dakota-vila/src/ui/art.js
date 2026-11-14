@@ -337,8 +337,13 @@ export function interiorSvg(info) {
   return s + '</svg>';
 }
 
+// Fundo de tela em imagem 3D (areas/fundo-*.webp, vertical): preenche a tela inteira, cortando as sobras
+const telaImg = (img) => `<svg viewBox="0 0 360 640" preserveAspectRatio="xMidYMid slice"><image href="${img}" width="360" height="640" preserveAspectRatio="xMidYMid slice"/></svg>`;
+
 /** Cenário de fundo para os diálogos. */
 export function sceneBg(kind) {
+  const img = sceneryArt(kind === 'interior' ? 'fundo-conversa-dentro' : 'fundo-conversa');
+  if (img) return telaImg(img);
   if (kind === 'interior') return `<svg viewBox="0 0 360 640" preserveAspectRatio="xMidYMid slice">${VDEFS}<rect width="360" height="640" fill="#ffe3ef"/><rect y="0" width="360" height="330" fill="#ffd0e2"/><rect x="40" y="70" width="120" height="150" rx="14" fill="#9fe3f7" stroke="#fff" stroke-width="10"/><rect x="200" y="70" width="120" height="150" rx="14" fill="#9fe3f7" stroke="#fff" stroke-width="10"/><rect x="45" y="170" width="110" height="45" fill="#4fb8e6"/><rect x="205" y="170" width="110" height="45" fill="#4fb8e6"/><rect y="330" width="360" height="310" fill="#e9b98a"/>${[0, 1, 2, 3, 4, 5, 6].map((i) => `<path d="M0 ${330 + i * 46} H360" stroke="#d49f6c" stroke-width="3"/>`).join('')}<path d="M0 20 Q90 60 180 20 T360 20" fill="none" stroke="#b67a4a" stroke-width="2"/>${[...Array(12)].map((_, i) => `<circle cx="${15 + i * 30}" cy="${32 + Math.sin((i / 6) * Math.PI) ** 2 * 10}" r="6" fill="${['#ffcc33', '#ff7f9f', '#7fd6f2'][i % 3]}"/>`).join('')}</svg>`;
   return `<svg viewBox="0 0 360 640" preserveAspectRatio="xMidYMid slice">${VDEFS}<defs><linearGradient id="dsky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffc1dc"/><stop offset=".5" stop-color="#ffe2b8"/><stop offset="1" stop-color="#9fe3f7"/></linearGradient></defs><rect width="360" height="640" fill="url(#dsky)"/><circle cx="270" cy="150" r="46" fill="#fff6c9"/><rect y="330" width="360" height="310" fill="#5cc3ea"/><path d="M0 360 q30 -10 60 0 t60 0 t60 0 t60 0 t60 0 t60 0" stroke="#fff" stroke-width="3" fill="none" opacity=".6"/><path d="M-20 420 Q120 340 380 410 V640 H-20Z" fill="#ffe9b8"/><path d="M-20 470 Q140 400 380 470 V640 H-20Z" fill="#a8e68f"/>${tree(300, 500, 1.6, 'pink')}${palm(40, 480, 2)}${tree(130, 520, 1.2, 'pink')}${palm(330, 470, 1.4)}<g transform="translate(250 330)"><path d="M-10 0 L-6 -50 h12 L10 0Z" fill="#fff"/><rect x="-8" y="-60" width="16" height="10" fill="#ffe08a"/><path d="M-10 -60 L0 -70 L10 -60Z" fill="#4a5b78"/></g></svg>`;
 }
@@ -359,7 +364,9 @@ export function coffeeCup() {
 /** Arte da tela de título: Dakota apoiada na mão com um cappuccino (ou a imagem dakota-menu.png, se existir). */
 export function titleArt(player) {
   const img = !(player && player.custom) && menuArt();
-  const hero = img ? `<div class="title-pose img"><img src="${img}" alt="Dakota" draggable="false"></div>`
+  const mesa = sceneryArt('mesa-menu'); // mesa 3D na frente da Dakota (esconde o corte dos braços)
+  const hero = img ? `<div class="title-pose img${mesa ? ' com-mesa' : ''}"><img src="${img}" alt="Dakota" draggable="false">${mesa ? `<img class="mesa" src="${mesa}" alt="" draggable="false">` : ''}</div>`
     : `<div class="title-pose"><div class="title-hero">${portrait('dakota', 'feliz', player, 'queixo')}</div><div class="title-cup">${coffeeCup()}</div></div>`;
-  return `<div class="title-bg">${sceneBg('vila')}</div>${hero}`;
+  const bg = sceneryArt('fundo-menu');
+  return `<div class="title-bg">${bg ? telaImg(bg) : sceneBg('vila')}</div>${hero}`;
 }

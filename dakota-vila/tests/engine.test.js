@@ -610,3 +610,15 @@ test('paisagem da vila: fundo e enfeites em imagem entram no mapa; sem imagem, c
   const sem = art.villageSvg(info, 1);
   assert.ok(!sem.includes('vila-fundo') && sem.includes('class="boat"'));
 });
+
+test('fundos de tela: menu, conversas e mesa usam imagem quando existe; sem imagem, continua desenhado', async () => {
+  const A = await import('../src/ui/assets.js');
+  const art = await import('../src/ui/art.js');
+  A.setManifest({ portraits: { 'dakota:menu': 'characters/dakota-menu.webp' }, scenery: { 'fundo-menu': 'areas/fundo-menu.webp', 'fundo-conversa': 'areas/fundo-conversa.webp', 'fundo-conversa-dentro': 'areas/fundo-conversa-dentro.webp', 'mesa-menu': 'areas/mesa-menu.webp' } });
+  const menu = art.titleArt(fresh().player);
+  assert.ok(menu.includes('assets/areas/fundo-menu.webp') && menu.includes('class="mesa"'));
+  assert.ok(art.sceneBg('vila').includes('fundo-conversa.webp'));
+  assert.ok(art.sceneBg('interior').includes('fundo-conversa-dentro.webp'));
+  A.setManifest(null);
+  assert.ok(!art.titleArt(fresh().player).includes('fundo-menu') && !art.sceneBg('vila').includes('<image'));
+});
