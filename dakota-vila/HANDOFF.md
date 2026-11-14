@@ -29,6 +29,8 @@ npm test           # 38 testes do motor (node:test)
 npm run recortar   # ferramenta de recorte de arte em http://localhost:8090/tools/recortar.html
 ```
 
+**Para a autora (sem terminal):** dois cliques em `dakota-vila/Iniciar Dakota Vila.bat` (há um atalho em `D:\DAKELARA VILA DAKOTA\Iniciar Dakota Vila.lnk`). Ele liga o jogo, abre no PC e mostra os endereços para o celular: Wi-Fi de casa (`http://<IP da rede>:8080`) e Tailscale (`http://100.x.x.x:8080`, funciona fora de casa com o Tailscale ligado no celular). O Firewall do Windows já permite o Node. Se o jogo já estiver ligado, só abre o navegador. O progresso do celular é separado do PC (salvo no navegador de cada aparelho).
+
 Teste de interface (opcional, exige Playwright e o servidor rodando em outro terminal):
 ```bash
 npm i -D playwright && npx playwright install chromium
