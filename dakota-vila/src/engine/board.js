@@ -43,6 +43,28 @@ export function canMerge(a, t) {
   if (a.left != null || t.left != null) return false; // baús já abertos não combinam
   return itemDef(a.id).mergeable;
 }
+/** Casas do tabuleiro que combinam com a casa i (em qualquer direção: arrastar i para lá ou de lá para i). */
+export function matchesOf(b, i) {
+  const a = b.cells[i];
+  if (!a) return [];
+  const out = [];
+  b.cells.forEach((t, j) => { if (j !== i && t && (canMerge(a, t) || canMerge(t, a))) out.push(j); });
+  return out;
+}
+/** Um par que dá para combinar agora (para a dica). Prefere dois itens livres; senão, um livre e um preso. */
+export function findPair(b) {
+  let backup = null;
+  for (let i = 0; i < b.cells.length; i++) {
+    const a = b.cells[i];
+    if (!isFree(a)) continue;
+    for (let j = 0; j < b.cells.length; j++) {
+      if (j === i || !canMerge(a, b.cells[j])) continue;
+      if (isFree(b.cells[j])) return [i, j];
+      if (!backup) backup = [i, j];
+    }
+  }
+  return backup;
+}
 
 function afterMerge(s, bk, i, now) {
   const b = s.boards[bk];

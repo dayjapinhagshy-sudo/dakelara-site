@@ -13,7 +13,9 @@ import { PANELS } from './panels.js';
 import { $, $$, esc, fmt, timer, ico, bar, itemFace } from './util.js';
 import { loadManifest, sceneryArt } from './assets.js';
 
-const G = { s: null, scene: 'menu', bk: 'main', sel: -1, modal: null, dlg: null, drag: null, isNew: false, started: false, popups: [], dirty: false, enter: false };
+const G = { s: null, scene: 'menu', bk: 'main', sel: -1, modal: null, dlg: null, drag: null, isNew: false, started: false, popups: [], dirty: false, enter: false, hint: null, match: null, idle: Date.now() };
+// Dica de combinação: depois deste tempo sem mexer no tabuleiro, dois itens iguais balançam
+const HINT_MS = 6000;
 window.__dakota = G; // para depuração e testes de interface
 const now = () => Date.now();
 const RARITY = ['Comum', 'Raro', 'Especial', 'Lendário'];
@@ -131,6 +133,8 @@ function cellHtml(it, i, wanted, t) {
   if (wanted[it.id] && B.isFree(it)) extra += '<b class="ok">✓</b>';
   if (it.left != null) extra += `<b class="chg">${it.left}</b>`;
   if (G.sel === i) cls += ' sel';
+  if (G.match && G.match.has(i)) cls += ' match'; // combina com o item selecionado
+  if (G.hint && G.hint.includes(i)) cls += ' hint'; // dica: par que dá para combinar
   return `<div class="cell" data-i="${i}"><div class="${cls}">${itemFace(it.id)}${extra}</div></div>`;
 }
 
@@ -214,6 +218,8 @@ function boardScene() {
     <button data-act="modal" data-name="eventos"><span>🎪</span>Eventos${M.pendingClaims(s, t) ? `<b class="dot">${M.pendingClaims(s, t)}</b>` : ''}</button>
     <button data-act="undo" ${s.undo ? '' : 'disabled'}><span>↩️</span>Desfazer</button>`;
   const navEv = `<button data-act="go" data-scene="board" data-bk="main"><span>⬅️</span>Tabuleiro</button><button data-act="modal" data-name="eventos" data-tab="fest"><span>🎁</span>Prêmios</button><button data-act="undo" ${s.undo ? '' : 'disabled'}><span>↩️</span>Desfazer</button>`;
+  G.match = G.sel >= 0 ? new Set(B.matchesOf(b, G.sel)) : null;
+  if (G.hint && !B.canMerge(b.cells[G.hint[0]], b.cells[G.hint[1]])) G.hint = null;
   const fundo = sceneryArt('fundo-tabuleiro'); // fundo 3D do tabuleiro (areas/fundo-tabuleiro.webp)
   return `<div class="scene board ${ev ? 'event' : ''}${fundo ? ' com-fundo' : ''}"${fundo ? ` style="background-image:url('${fundo}')"` : ''}>${hud()}${top}
     <div class="board-mid">${ev ? '' : sideRail(t)}<div class="grid-wrap"><div class="grid" style="--w:${b.w};--h:${b.h}">${b.cells.map((it, i) => cellHtml(it, i, wanted, t)).join('')}</div></div></div>
@@ -314,7 +320,7 @@ function flow() {
 
 function go(scene, bk) {
   G.scene = scene; if (bk) G.bk = bk;
-  G.sel = -1; G.enter = true; G.modal = null;
+  G.sel = -1; G.enter = true; G.modal = null; G.hint = null; G.idle = now();
   sfx('page'); render(); flow();
 }
 
@@ -441,6 +447,8 @@ function tapCell(i) {
   G.sel = i; sfx('tap'); render();
 }
 document.addEventListener('pointerdown', (e) => {
+  G.idle = now(); // mexeu: a dica some e o relógio da dica recomeça
+  if (G.hint) { G.hint = null; for (const el of $$('.it.hint')) el.classList.toggle('hint', false); }
   const cell = e.target.closest('.grid .cell');
   if (!cell || G.dlg) return;
   unlockAudio();
@@ -506,6 +514,11 @@ function loop() {
   let expired = false;
   for (const el of $$('[data-t]')) { const left = +el.dataset.t - t; el.textContent = fmt(left); if (left <= 0) expired = true; }
   if ((changed || expired) && !G.drag) { if (changed) G.dirty = true; render(); }
+  // dica: parada há um tempo no tabuleiro → mostra um par que combina
+  if (G.scene === 'board' && !G.modal && !G.dlg && !G.drag && !G.hint && t - G.idle > HINT_MS) {
+    const p = B.findPair(s.boards[G.bk]);
+    if (p) { G.hint = p; for (const k of p) { const el = $(`.grid .cell[data-i="${k}"] .it`); if (el) el.classList.add('hint'); } }
+  }
 }
 
 async function boot() {

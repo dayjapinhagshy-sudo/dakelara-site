@@ -622,3 +622,17 @@ test('fundos de tela: menu, conversas e mesa usam imagem quando existe; sem imag
   A.setManifest(null);
   assert.ok(!art.titleArt(fresh().player).includes('fundo-menu') && !art.sceneBg('vila').includes('<image'));
 });
+
+test('dica de combinação: acha os iguais do item tocado e um par para a dica', () => {
+  const s = fresh(), b = s.boards.main;
+  b.cells = b.cells.map(() => null);
+  assert.equal(B.findPair(b), null, 'tabuleiro vazio: sem dica');
+  put(s, 0, 'cafe:2'); put(s, 5, 'cafe:2'); put(s, 9, 'cafe:3'); put(s, 12, 'cafe:2', { covered: 1 });
+  assert.deepEqual(B.matchesOf(b, 0), [5], 'só o igual livre; nem o de outro nível nem o escondido no caixote');
+  assert.deepEqual(B.findPair(b), [0, 5]);
+  put(s, 5, 'cafe:2', { locked: 1 });
+  assert.deepEqual(B.matchesOf(b, 5), [0], 'item preso combina se o outro vier até ele');
+  assert.deepEqual(B.findPair(b), [0, 5], 'sem par livre, aceita livre + preso');
+  put(s, 20, 'pao:1'); put(s, 21, 'pao:1');
+  assert.deepEqual(B.findPair(b), [20, 21], 'prefere dois itens livres');
+});
