@@ -362,10 +362,15 @@ export function coffeeCup() {
 }
 
 /** Arte da tela de título: Dakota apoiada na mão com um cappuccino (ou a imagem dakota-menu.png, se existir). */
+// Pálpebras desenhadas por cima dos olhos da imagem characters/dakota-menu.webp (coordenadas da imagem 1024×1536).
+// Ficam abertas (invisíveis) e fecham rapidinho de tempos em tempos. Se a imagem da Dakota mudar, reajustar aqui.
+const lid = (cx, cy, rx, ry, rot) => `<g transform="rotate(${rot} ${cx} ${cy})"><g class="lid"><path d="M${cx - rx} ${cy} Q${cx} ${cy - ry * 2} ${cx + rx} ${cy} Q${cx} ${cy + ry * 1.25} ${cx - rx} ${cy}Z" fill="url(#lidskin)" filter="url(#lidsoft)"/><path d="M${cx - rx} ${cy} Q${cx} ${cy + ry * 1.25} ${cx + rx} ${cy}" fill="none" stroke="#2a130a" stroke-width="7" stroke-linecap="round"/></g></g>`;
+const PISCAR = `<svg class="piscar" viewBox="0 0 1024 1536" aria-hidden="true"><defs><linearGradient id="lidskin" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e09a7a"/><stop offset=".6" stop-color="#d4886a"/><stop offset="1" stop-color="#c07254"/></linearGradient><filter id="lidsoft" x="-10%" y="-20%" width="120%" height="140%"><feGaussianBlur stdDeviation="2.5"/></filter></defs>${lid(419, 632, 64, 26, 5)}${lid(594, 580, 52, 27, -22)}</svg>`;
+
 export function titleArt(player) {
   const img = !(player && player.custom) && menuArt();
   const mesa = sceneryArt('mesa-menu'); // mesa 3D na frente da Dakota (esconde o corte dos braços)
-  const hero = img ? `<div class="title-pose img${mesa ? ' com-mesa' : ''}"><img src="${img}" alt="Dakota" draggable="false">${mesa ? `<img class="mesa" src="${mesa}" alt="" draggable="false">` : ''}</div>`
+  const hero = img ? `<div class="title-pose img${mesa ? ' com-mesa' : ''}"><img src="${img}" alt="Dakota" draggable="false">${PISCAR}${mesa ? `<img class="mesa" src="${mesa}" alt="" draggable="false">` : ''}</div>`
     : `<div class="title-pose"><div class="title-hero">${portrait('dakota', 'feliz', player, 'queixo')}</div><div class="title-cup">${coffeeCup()}</div></div>`;
   const bg = sceneryArt('fundo-menu');
   return `<div class="title-bg">${bg ? telaImg(bg) : sceneBg('vila')}</div>${hero}`;
